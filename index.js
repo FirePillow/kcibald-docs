@@ -15,7 +15,7 @@ let compile = require('handlebars').compile;
 let ossStore;
 if (process.env.oss_region && process.env.oss_accessKeyId && process.env.oss_accessKeySecret && process.env.bucket_name) {
     let oss = require('ali-oss');
-    store = oss({
+    ossStore = oss({
         region: process.env.oss_region,
         accessKeyId: process.env.oss_accessKeyId,
         accessKeySecret: process.env.oss_accessKeySecret,
@@ -28,32 +28,36 @@ const configFilePath = 'api.json';
 const uploadFileName = 'index.html';
 
 (async function () {
-    let spec = await loadAndBundleSpec(configFilePath);
-    const store = await createStore(spec, 'f.json', {});
-    const sheet = new ServerStyleSheet();
-    let element = React.createElement(Redoc, {store});
-    html = renderToString(sheet.collectStyles(element));
-    css = sheet.getStyleTags();
-    state = await store.toJS();
-    let templateFileName = join(__dirname, './template.hbs');
-    let template = compile(readFileSync(templateFileName).toString());
-    let result = template({
-        redocHTML: `<div id="redoc">${html}</div>`,
-        redoc_state: JSON.stringify(state),
-        redoc_styles: css,
-        redocjs: '<script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0-rc.4/bundles/redoc.standalone.min.js"></script>',
-        title: `${spec.info.title} documtation`
-    });
+    try {
+        let spec = await loadAndBundleSpec(configFilePath);
+        const store = await createStore(spec, 'f.json', {});
+        const sheet = new ServerStyleSheet();
+        let element = React.createElement(Redoc, {store});
+        html = renderToString(sheet.collectStyles(element));
+        css = sheet.getStyleTags();
+        state = await store.toJS();
+        let templateFileName = join(__dirname, './template.hbs');
+        let template = compile(readFileSync(templateFileName).toString());
+        let result = template({
+            redocHTML: `<div id="redoc">${html}</div>`,
+            redoc_state: JSON.stringify(state),
+            redoc_styles: css,
+            redocjs: '<script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0-rc.4/bundles/redoc.standalone.min.js"></script>',
+            title: `${spec.info.title} documtation`
+        });
 
-    if (ossStore) {
-        console.log(`uploading using access key ${process.env.oss_accessKeyId}`)
-        let promiseHTML = ossStore.put(uploadFileName, Buffer.from(result));
-        let promiseConfig = ossStore.put(configFilePath, configFilePath);
-        Promise.all([promiseHTML, promiseConfig])
-    } else {
-        writeFileSync('output/' + uploadFileName, result)
-        copyFileSync(configFilePath, 'output/' + configFilePath)
+        if (ossStore) {
+            console.log(`uploading using access key ${process.env.oss_accessKeyId}`)
+            let promiseHTML = ossStore.put(uploadFileName, Buffer.from(result));
+            let promiseConfig = ossStore.put(configFilePath, configFilePath);
+            Promise.all([promiseHTML, promiseConfig])
+        } else {
+            writeFileSync('output/' + uploadFileName, result)
+            copyFileSync(configFilePath, 'output/' + configFilePath)
+        }
+    } catch (e) {
+        console.log(e)
+        process.exit(-1)
     }
-
 })();
 
