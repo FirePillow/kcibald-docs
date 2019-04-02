@@ -50,7 +50,7 @@ const uploadFileName = 'index.html';
             console.log(`uploading using access key ${process.env.oss_accessKeyId}`)
             let promiseHTML = ossStore.put(uploadFileName, Buffer.from(result));
             let promiseConfig = ossStore.put(configFilePath, configFilePath);
-            Promise.all([promiseHTML, promiseConfig])
+            await Promise.all([promiseHTML, promiseConfig])
         } else {
             writeFileSync('output/' + uploadFileName, result)
             copyFileSync(configFilePath, 'output/' + configFilePath)

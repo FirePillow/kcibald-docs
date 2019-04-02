@@ -26,52 +26,52 @@
     {
       "name": "authorized",
       "description": "authorized call"
+    },
+    {
+      "name": "stable",
+      "description": "The api is stable and will likely not change"
+    },
+    {
+      "name": "developing",
+      "description": "The api is unstable and may change"
     }
   ],
   "paths": {
-    "/inventory": {
+    "/feed": {
       "get": {
         "tags": [
-          "developers"
+          "developing"
         ],
-        "summary": "searches inventory",
-        "operationId": "searchInventory",
-        "description": "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "summary": "fetch feed",
+        "description": "fetch new activities from all subscribed regions",
         "parameters": [
           {
             "in": "query",
-            "name": "searchString",
-            "description": "pass an optional search string for looking up inventory",
-            "required": false,
+            "name": "after",
+            "description": "fetch activities after a post identified using an special id for paging",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "hexadecimal",
+              "minLength": "24",
+              "maxLength": "24",
+              "required": "false"
             }
           },
           {
             "in": "query",
-            "name": "skip",
-            "description": "number of records to skip for pagination",
+            "name": "amount",
+            "description": "maximum number of activities to return",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "minimum": 0
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "description": "maximum number of records to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 0,
-              "maximum": 50
+              "minimum": 1,
+              "maximum": 50,
+              "required": "false"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "search results matching criteria",
+            "description": "fetch success",
             "content": {
               "application/json": {
                 "schema": {
@@ -121,6 +121,12 @@
   },
   "components": {
     "schemas": {
+      "response": {
+        "type": "object",
+        "required": [
+
+        ]
+      },
       "InventoryItem": {
         "type": "object",
         "required": [
