@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node index.js"
+    "compile": "node index.js"
   },
   "author": "wusatosi",
   "license": "ISC",
   "dependencies": {
+    "ali-oss": "^6.1.0",
     "redoc": "^2.0.0-rc.4"
   },
   "devDependencies": {
