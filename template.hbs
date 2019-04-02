@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf8"/>
+    <title>{{title}}</title>
+    <!-- needed for adaptive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    {{{redoc_styles}}}
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+</head>
+
+<body>
+{{{redocHTML}}}
+{{{redocjs}}}
+<script>
+    var __redoc_state = {{{redoc_state}}};
+    var container = document.getElementById('redoc');
+    Redoc.hydrate(__redoc_state, container);
+</script>
+</body>
+
+</html>
