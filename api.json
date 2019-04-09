@@ -1,28 +1,14 @@
 {
   "openapi": "3.0.0",
-  "servers": [
-    {
-      "description": "SwaggerHub API Auto Mocking",
-      "url": "https://virtserver.swaggerhub.com/wusatosi/Kcibald/1.0.0"
-    }
-  ],
   "info": {
     "description": "Kcibald API",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "title": "Kcibald API",
     "contact": {
       "email": "help@kcibald.com"
     }
   },
   "tags": [
-    {
-      "name": "admins",
-      "description": "authorized calls"
-    },
-    {
-      "name": "developers",
-      "description": "Operations available to regular developers"
-    },
     {
       "name": "authorized",
       "description": "authorized call"
@@ -34,12 +20,32 @@
     {
       "name": "developing",
       "description": "The api is unstable and may change"
+    },
+    {
+      "name": "listing",
+      "description": ""
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "feed",
+      "tags": [
+        "listing"
+      ]
+    },
+    {
+      "name": "development stage",
+      "tags": [
+        "stable",
+        "developing"
+      ]
     }
   ],
   "paths": {
     "/feed": {
       "get": {
         "tags": [
+          "listing",
           "developing"
         ],
         "summary": "fetch feed",
@@ -75,9 +81,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/InventoryItem"
+                  "properties": {
+                    "isSuccess": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/post"
+                      }
+                    }
                   }
                 }
               }
@@ -87,94 +100,119 @@
             "description": "bad input parameter"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "admins"
-        ],
-        "summary": "adds an inventory item",
-        "operationId": "addInventory",
-        "description": "Adds an item to the system",
-        "responses": {
-          "201": {
-            "description": "item created"
-          },
-          "400": {
-            "description": "invalid input, object invalid"
-          },
-          "409": {
-            "description": "an existing item already exists"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InventoryItem"
-              }
-            }
-          },
-          "description": "Inventory item to add"
-        }
       }
     }
   },
   "components": {
     "schemas": {
-      "response": {
+      "post": {
         "type": "object",
-        "required": [
-
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "why not to choice physics HL"
+          },
+          "post_id": {
+            "type": "string",
+            "required": "true",
+            "example": "AXPYAOfpEi"
+          },
+          "comments": {
+            "type": "array",
+            "required": "true",
+            "items": {
+              "$ref": "#/components/schemas/comment"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/content_base"
+          }
         ]
       },
-      "InventoryItem": {
+      "user": {
         "type": "object",
-        "required": [
-          "id",
-          "name",
-          "manufacturer",
-          "releaseDate"
-        ],
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "user_id": {
+            "type": "string"
           },
-          "name": {
+          "user_name": {
             "type": "string",
-            "example": "Widget Adapter"
+            "maxLength": "50"
           },
-          "releaseDate": {
+          "signature": {
+            "type": "string"
+          },
+          "avatar": {
+            "$ref": "#/components/schemas/attachment"
+          }
+        },
+        "example": {
+          "user_id": "r8hpppZ6mK",
+          "user_name": "james",
+          "signature": "i love physics",
+          "avatar": ""
+        }
+      },
+      "comment": {
+        "type": "object",
+        "properties": {
+          "replies": {
+            "$ref": "#/components/schemas/comment"
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/content_base"
+          },
+          {
+            "example": {
+              "content": "this is good"
+            }
+          }
+        ]
+      },
+      "content_base": {
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/user"
+          },
+          "create_time_stamp": {
+            "$ref": "#/components/schemas/create_timestamp"
+          },
+          "update_time_stamp": {
+            "$ref": "#/components/schemas/update_timestamp"
+          },
+          "content": {
             "type": "string",
-            "format": "date-time",
-            "example": "2016-08-29T09:12:33.001Z"
+            "example": "lalala"
           },
-          "manufacturer": {
-            "$ref": "#/components/schemas/Manufacturer"
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/attachment"
+            }
           }
         }
       },
-      "Manufacturer": {
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "ACME Corporation"
-          },
-          "homePage": {
-            "type": "string",
-            "format": "url",
-            "example": "https://www.acme-corp.com"
-          },
-          "phone": {
-            "type": "string",
-            "example": "408-867-5309"
+      "attachment": {
+        "type": "string",
+        "example": "//usercontent.kcibald.com/something.jpeg"
+      },
+      "create_timestamp": {
+        "type": "integer",
+        "format": "int64",
+        "example": "1554806142"
+      },
+      "update_timestamp": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/create_timestamp"
           }
-        },
-        "type": "object"
+        ],
+        "example": "1554806142",
+        "nullable": true
       }
     }
   }

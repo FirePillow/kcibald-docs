@@ -22,7 +22,7 @@ if (process.env.oss_region && process.env.oss_accessKeyId && process.env.oss_acc
         bucket: process.env.bucket_name
     });
 } else
-    null
+    ossStore = null
 
 const configFilePath = 'api.json';
 const uploadFileName = 'index.html';
