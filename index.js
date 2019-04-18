@@ -12,6 +12,8 @@ let React = require('react');
 let Redoc = require('redoc').Redoc;
 let compile = require('handlebars').compile;
 
+let redoc_version = require('./package').dependencies.redoc
+
 let ossStore;
 if (process.env.oss_region && process.env.oss_accessKeyId && process.env.oss_accessKeySecret && process.env.bucket_name) {
     let oss = require('ali-oss');
@@ -30,7 +32,7 @@ const uploadFileName = 'index.html';
 (async function () {
     try {
         let spec = await loadAndBundleSpec(configFilePath);
-        const store = await createStore(spec, 'f.json', {});
+        const store = await createStore(spec, configFilePath, {});
         const sheet = new ServerStyleSheet();
         let element = React.createElement(Redoc, {store});
         html = renderToString(sheet.collectStyles(element));
@@ -42,7 +44,8 @@ const uploadFileName = 'index.html';
             redocHTML: `<div id="redoc">${html}</div>`,
             redoc_state: JSON.stringify(state),
             redoc_styles: css,
-            redocjs: '<script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0-rc.4/bundles/redoc.standalone.min.js"></script>',
+            redocjs:
+                `<script src="https://cdn.jsdelivr.net/npm/redoc@${redoc_version}/bundles/redoc.standalone.min.js"></script>`,
             title: `${spec.info.title} documtation`
         });
 
