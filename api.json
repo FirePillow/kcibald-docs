@@ -10,10 +10,6 @@
   },
   "tags": [
     {
-      "name": "authorized",
-      "description": "authorized call"
-    },
-    {
       "name": "stable",
       "description": "The api is stable and will likely not change"
     },
@@ -52,27 +48,10 @@
         "description": "fetch new activities from all subscribed regions",
         "parameters": [
           {
-            "in": "query",
-            "name": "after",
-            "description": "fetch activities after a post identified using an special id for paging",
-            "schema": {
-              "type": "string",
-              "format": "hexadecimal",
-              "minLength": "24",
-              "maxLength": "24",
-              "required": "false"
-            }
+            "$ref": "#/components/parameters/query_mark"
           },
           {
-            "in": "query",
-            "name": "amount",
-            "description": "maximum number of activities to return",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50,
-              "required": "false"
-            }
+            "$ref": "#/components/parameters/amount"
           }
         ],
         "responses": {
@@ -82,13 +61,37 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "isSuccess": {
+                    "success": {
                       "type": "boolean",
-                      "example": true
+                      "enum": [
+                        true
+                      ]
                     },
                     "data": {
-                      "items": {
-                        "$ref": "#/components/schemas/post"
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/post_head"
+                              },
+                              {
+                                "properties": {
+                                  "region": {
+                                    "type": "string",
+                                    "example": "ib-office",
+                                    "description": "region of the post"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "mark": {
+                          "$ref": "#/components/schemas/query_mark"
+                        }
                       }
                     }
                   }
@@ -98,13 +101,262 @@
           },
           "400": {
             "description": "bad input parameter"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "402": {
+            "$ref": "#/components/responses/common_auth"
+          }
+        }
+      }
+    },
+    "/r/{region}/": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "region",
+          "required": true,
+          "allowEmptyValue": false,
+          "schema": {
+            "type": "string",
+            "example": "ib-office"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "developing",
+          "listing"
+        ],
+        "summary": "list regional information",
+        "operationId": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/region"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          }
+        }
+      }
+    },
+    "/r/{region}/posts": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "region",
+          "required": true,
+          "allowEmptyValue": false,
+          "schema": {
+            "type": "string",
+            "example": "ib-office"
+          }
+        }
+      ],
+      "get": {
+        "summary": "list posts under region",
+        "tags": [
+          "listing"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query_mark"
+          },
+          {
+            "$ref": "#/components/parameters/amount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/post_head"
+                          }
+                        },
+                        "query_mark": {
+                          "$ref": "#/components/schemas/query_mark"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/r/{region}/{postId}/": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "region",
+          "schema": {
+            "type": "string",
+            "example": "ib-office"
+          }
+        },
+        {
+          "in": "path",
+          "name": "postId",
+          "schema": {
+            "type": "string",
+            "example": "AXPYAOfpEi"
+          }
+        }
+      ],
+      "get": {
+        "summary": "get post",
+        "tags": [
+          "listing"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "402": {
+            "$ref": "#/components/responses/common_auth"
           }
         }
       }
     }
   },
   "components": {
+    "parameters": {
+      "query_mark": {
+        "in": "query",
+        "name": "after",
+        "description": "fetch activities after a post identified using an special id for paging",
+        "schema": {
+          "$ref": "#/components/schemas/query_mark"
+        }
+      },
+      "amount": {
+        "in": "query",
+        "name": "amount",
+        "description": "maximum number of activities to return",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "required": "false"
+        }
+      }
+    },
     "schemas": {
+      "region": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ib-office"
+          },
+          "region_id": {
+            "type": "string",
+            "example": "dkjkaljfd"
+          },
+          "description": {
+            "type": "string",
+            "example": "region for ib office to post annunciation"
+          },
+          "avatar": {
+            "type": "string",
+            "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+          },
+          "top_posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/post_head"
+            },
+            "maxItems": "20"
+          },
+          "post_mark": {
+            "$ref": "#/components/schemas/query_mark"
+          }
+        }
+      },
+      "post_head": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "why not to choice physics HL"
+          },
+          "post_id": {
+            "type": "string",
+            "example": "AXPYAOfpEi"
+          },
+          "author": {
+            "$ref": "#/components/schemas/user"
+          },
+          "create_time_stamp": {
+            "$ref": "#/components/schemas/create_timestamp"
+          },
+          "update_time_stamp": {
+            "$ref": "#/components/schemas/update_timestamp"
+          },
+          "content": {
+            "type": "string",
+            "example": "lalala"
+          }
+        }
+      },
       "post": {
         "type": "object",
         "properties": {
@@ -114,7 +366,6 @@
           },
           "post_id": {
             "type": "string",
-            "required": "true",
             "example": "AXPYAOfpEi"
           },
           "comments": {
@@ -135,43 +386,52 @@
         "type": "object",
         "properties": {
           "user_id": {
-            "type": "string"
+            "type": "string",
+            "example": "r8hpppZ6mK"
           },
           "user_name": {
             "type": "string",
-            "maxLength": "50"
+            "maxLength": "50",
+            "example": "james"
           },
           "signature": {
-            "type": "string"
+            "type": "string",
+            "example": "I love physics",
+            "description": "user signature, can not be an HTML element"
           },
           "avatar": {
-            "$ref": "#/components/schemas/attachment"
+            "type": "string",
+            "example": "avatars.kcibald.com/hRkynUoTzP",
+            "description": "url for avatar file"
           }
-        },
-        "example": {
-          "user_id": "r8hpppZ6mK",
-          "user_name": "james",
-          "signature": "i love physics",
-          "avatar": ""
         }
       },
       "comment": {
         "type": "object",
         "properties": {
+          "author": {
+            "$ref": "#/components/schemas/user"
+          },
+          "create_time_stamp": {
+            "$ref": "#/components/schemas/create_timestamp"
+          },
+          "update_time_stamp": {
+            "$ref": "#/components/schemas/update_timestamp"
+          },
+          "content": {
+            "type": "string",
+            "example": "this is good"
+          },
           "replies": {
             "$ref": "#/components/schemas/comment"
-          }
-        },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/content_base"
           },
-          {
-            "example": {
-              "content": "this is good"
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/attachment"
             }
           }
-        ]
+        }
       },
       "content_base": {
         "properties": {
@@ -197,8 +457,19 @@
         }
       },
       "attachment": {
-        "type": "string",
-        "example": "//usercontent.kcibald.com/something.jpeg"
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "something",
+            "description": "title of the attachment"
+          },
+          "link": {
+            "type": "string",
+            "example": "usercontent.kcibald/abcdefg.jpeg",
+            "description": "url link of the attachment"
+          }
+        }
       },
       "create_timestamp": {
         "type": "integer",
@@ -213,6 +484,103 @@
         ],
         "example": "1554806142",
         "nullable": true
+      },
+      "query_mark": {
+        "type": "string",
+        "description": "meant to be an identifier to mark the position of post listed, a tool for paging",
+        "format": "hexadecimal",
+        "minLength": "24",
+        "maxLength": "24",
+        "required": "false",
+        "example": "5c7fc05f802b95782f1f9e88"
+      }
+    },
+    "responses": {
+      "common_auth": {
+        "description": "wrong authorization",
+        "content": {
+          "application/json": {
+            "schema": {
+              "anyOf": [
+                {
+                  "description": "denied",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "AUTHORIZATION_DENIED"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "description": "user banned",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "AUTHORIZATION_USER_BANNED"
+                      ]
+                    },
+                    "banned_type": {
+                      "type": "object",
+                      "properties": {
+                        "scope": {
+                          "type": "string",
+                          "enum": [
+                            "CURRENT",
+                            "ALL"
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "due to use of word \"FUCK\" in public regions",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "no_authorization": {
+        "description": "no authorization or authorization expired",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "enum": [
+                    "AUTHORIZATION_MISSING",
+                    "AUTHORIZATION_EXPIRED"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
