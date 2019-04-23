@@ -18,15 +18,30 @@
       "description": "The api is unstable and may change"
     },
     {
-      "name": "listing",
-      "description": ""
+      "name": "general",
+      "description": "General request / query"
+    },
+    {
+      "name": "regional",
+      "description": "Regional request / query"
+    },
+    {
+      "name": "post",
+      "description": "Post related request / query"
+    },
+    {
+      "name": "comment",
+      "description": "Comment related request / query"
     }
   ],
   "x-tagGroups": [
     {
       "name": "feed",
       "tags": [
-        "listing"
+        "general",
+        "regional",
+        "post",
+        "comment"
       ]
     }
   ],
@@ -34,7 +49,7 @@
     "/feed": {
       "get": {
         "tags": [
-          "listing",
+          "general",
           "developing"
         ],
         "summary": "fetch feed",
@@ -98,7 +113,7 @@
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
-          "402": {
+          "403": {
             "$ref": "#/components/responses/common_auth"
           },
           "500": {
@@ -108,6 +123,7 @@
       }
     },
     "/r/{region}/": {
+      "description": "Example url: /r/ib-office",
       "parameters": [
         {
           "in": "path",
@@ -122,15 +138,15 @@
       ],
       "get": {
         "tags": [
-          "developing",
-          "listing"
+          "regional",
+          "developing"
         ],
         "summary": "list regional information",
         "operationId": "",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "",
+            "description": "success",
             "content": {
               "application/json": {
                 "schema": {
@@ -167,7 +183,8 @@
       "put": {
         "summary": "create post",
         "tags": [
-          "listing"
+          "post",
+          "developing"
         ],
         "operationId": "",
         "parameters": [],
@@ -231,7 +248,7 @@
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
-          "402": {
+          "403": {
             "$ref": "#/components/responses/common_auth"
           },
           "500": {
@@ -241,6 +258,7 @@
       }
     },
     "/r/{region}/posts": {
+      "description": "Example url: /r/ib-office/posts",
       "parameters": [
         {
           "in": "path",
@@ -256,7 +274,8 @@
       "get": {
         "summary": "list posts under region",
         "tags": [
-          "listing"
+          "post",
+          "developing"
         ],
         "parameters": [
           {
@@ -268,7 +287,7 @@
         ],
         "responses": {
           "200": {
-            "description": "posts",
+            "description": "success",
             "content": {
               "application/json": {
                 "schema": {
@@ -335,17 +354,18 @@
           "allowEmptyValue": true,
           "schema": {
             "pattern": "-ANYTHING",
-            "description": "Server will ignore content in this section, this is meant to help url to be human readable, if this parameter is provided, it should start with character '-', do mind it need to be compatible with url theme, and prevent using character '/'",
+            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
             "example": "-how-to-get-seven-in-math-HL"
           }
         }
       ],
+      "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
       "get": {
         "summary": "get post",
         "tags": [
-          "listing"
+          "post",
+          "developing"
         ],
-        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
         "parameters": [],
         "responses": {
           "200": {
@@ -359,6 +379,59 @@
                     },
                     "data": {
                       "$ref": "#/components/schemas/post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "post",
+          "developing"
+        ],
+        "summary": "delete post",
+        "description": "Only the creator of the poster or administer of the region is capable for deleting posts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/post_head"
+                        },
+                        {
+                          "description": "post deleted"
+                        }
+                      ]
                     }
                   }
                 }
@@ -440,6 +513,7 @@
       },
       "post_head": {
         "type": "object",
+        "description": "represents a minimized post object, containing only the main body without comments",
         "properties": {
           "title": {
             "type": "string",
@@ -461,6 +535,10 @@
           "content": {
             "type": "string",
             "example": "lalala"
+          },
+          "comment_count": {
+            "type": "integer",
+            "example": 50
           }
         }
       },
@@ -480,7 +558,21 @@
             "required": "true",
             "items": {
               "$ref": "#/components/schemas/comment"
-            }
+            },
+            "maxItems": 20
+          },
+          "comment_count": {
+            "type": "integer",
+            "example": 50
+          },
+          "comment_query_mark": {
+            "description": "use for paging comments, null if reached to the end",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/query_mark"
+              }
+            ]
           }
         },
         "allOf": [
@@ -607,7 +699,7 @@
         "description": "Bad request"
       },
       "common_auth": {
-        "description": "insufficient authorization",
+        "description": "Standard authorization failure",
         "content": {
           "application/json": {
             "schema": {
@@ -641,7 +733,7 @@
                     "message": {
                       "type": "string",
                       "enum": [
-                        "AUTHORIZATION_USER_BANNED"
+                        "USER_BANNED"
                       ]
                     },
                     "banned_type": {
@@ -669,7 +761,7 @@
         }
       },
       "no_authorization": {
-        "description": "no authorization or authorization expired",
+        "description": "No authorization or authorization expired",
         "content": {
           "application/json": {
             "schema": {
