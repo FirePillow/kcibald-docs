@@ -5,7 +5,7 @@
     "version": "0.0.1",
     "title": "Kcibald API",
     "contact": {
-      "email": "help@kcibald.com"
+      "name": "wusatosi"
     }
   },
   "tags": [
@@ -27,13 +27,6 @@
       "name": "feed",
       "tags": [
         "listing"
-      ]
-    },
-    {
-      "name": "development stage",
-      "tags": [
-        "stable",
-        "developing"
       ]
     }
   ],
@@ -100,13 +93,16 @@
             }
           },
           "400": {
-            "description": "bad input parameter"
+            "$ref": "#/components/responses/bad_request"
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
           "402": {
             "$ref": "#/components/responses/common_auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -159,6 +155,87 @@
           },
           "403": {
             "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      },
+      "put": {
+        "summary": "create post",
+        "tags": [
+          "listing"
+        ],
+        "operationId": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "How to get a 7 in math HL"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "it's impossible"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "upload_token": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "link": {
+                      "type": "string",
+                      "example": "www.kcibald.com/r/ib-office/akdadak",
+                      "description": "the link to created post"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "402": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -217,18 +294,31 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
     },
-    "/r/{region}/{postId}/": {
+    "/r/{region}/{postId}{any}/": {
       "parameters": [
         {
           "in": "path",
           "name": "region",
           "schema": {
             "type": "string",
-            "example": "ib-office"
+            "example": "ib-office",
+            "description": "this is the region NAME of the post"
           }
         },
         {
@@ -238,6 +328,16 @@
             "type": "string",
             "example": "AXPYAOfpEi"
           }
+        },
+        {
+          "in": "path",
+          "name": "any",
+          "allowEmptyValue": true,
+          "schema": {
+            "pattern": "-ANYTHING",
+            "description": "Server will ignore content in this section, this is meant to help url to be human readable, if this parameter is provided, it should start with character '-', do mind it need to be compatible with url theme, and prevent using character '/'",
+            "example": "-how-to-get-seven-in-math-HL"
+          }
         }
       ],
       "get": {
@@ -245,6 +345,7 @@
         "tags": [
           "listing"
         ],
+        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
         "parameters": [],
         "responses": {
           "200": {
@@ -265,13 +366,19 @@
             }
           },
           "400": {
-            "description": "Bad Request"
+            "$ref": "#/components/responses/bad_request"
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
-          "402": {
+          "403": {
             "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -282,7 +389,7 @@
       "query_mark": {
         "in": "query",
         "name": "after",
-        "description": "fetch activities after a post identified using an special id for paging",
+        "description": "fetch activities after a post identified using an special id for paging, this will be provided upon query",
         "schema": {
           "$ref": "#/components/schemas/query_mark"
         }
@@ -496,8 +603,11 @@
       }
     },
     "responses": {
+      "bad_request": {
+        "description": "Bad request"
+      },
       "common_auth": {
-        "description": "wrong authorization",
+        "description": "insufficient authorization",
         "content": {
           "application/json": {
             "schema": {
@@ -575,6 +685,52 @@
                   "enum": [
                     "AUTHORIZATION_MISSING",
                     "AUTHORIZATION_EXPIRED"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "not_found": {
+        "description": "requested information not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "enum": [
+                    "NOT_FOUND"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "server_failure": {
+        "description": "Internal Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "enum": [
+                    "INTERNAL_ERROR"
                   ]
                 }
               }
