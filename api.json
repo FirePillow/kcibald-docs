@@ -179,6 +179,81 @@
             "$ref": "#/components/responses/server_failure"
           }
         }
+      }
+    },
+    "/r/{region}/posts": {
+      "description": "Example url: /r/ib-office/posts",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "region",
+          "required": true,
+          "allowEmptyValue": false,
+          "schema": {
+            "type": "string",
+            "example": "ib-office"
+          }
+        }
+      ],
+      "get": {
+        "summary": "list posts under region",
+        "tags": [
+          "post",
+          "developing"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query_mark"
+          },
+          {
+            "$ref": "#/components/parameters/amount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/post_head"
+                          }
+                        },
+                        "query_mark": {
+                          "$ref": "#/components/schemas/query_mark"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
       },
       "put": {
         "summary": "create post",
@@ -250,78 +325,6 @@
           },
           "403": {
             "$ref": "#/components/responses/common_auth"
-          },
-          "500": {
-            "$ref": "#/components/responses/server_failure"
-          }
-        }
-      }
-    },
-    "/r/{region}/posts": {
-      "description": "Example url: /r/ib-office/posts",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "region",
-          "required": true,
-          "allowEmptyValue": false,
-          "schema": {
-            "type": "string",
-            "example": "ib-office"
-          }
-        }
-      ],
-      "get": {
-        "summary": "list posts under region",
-        "tags": [
-          "post",
-          "developing"
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/query_mark"
-          },
-          {
-            "$ref": "#/components/parameters/amount"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "posts": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/post_head"
-                          }
-                        },
-                        "query_mark": {
-                          "$ref": "#/components/schemas/query_mark"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/no_authorization"
-          },
-          "403": {
-            "$ref": "#/components/responses/common_auth"
-          },
-          "404": {
-            "$ref": "#/components/responses/not_found"
           },
           "500": {
             "$ref": "#/components/responses/server_failure"
