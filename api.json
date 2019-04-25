@@ -123,7 +123,6 @@
       }
     },
     "/r/{region}/": {
-      "description": "Example url: /r/ib-office",
       "parameters": [
         {
           "in": "path",
@@ -137,6 +136,7 @@
         }
       ],
       "get": {
+        "description": "Example url: /r/ib-office",
         "tags": [
           "regional",
           "developing"
@@ -181,8 +181,7 @@
         }
       }
     },
-    "/r/{region}/posts": {
-      "description": "Example url: /r/ib-office/posts",
+    "/r/{region}/p/": {
       "parameters": [
         {
           "in": "path",
@@ -196,6 +195,7 @@
         }
       ],
       "get": {
+        "description": "Example url: /r/ib-office/posts",
         "summary": "list posts under region",
         "tags": [
           "post",
@@ -204,6 +204,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/query_mark"
+          },
+          {
+            "$ref": "#/components/parameters/skip"
           },
           {
             "$ref": "#/components/parameters/amount"
@@ -256,6 +259,7 @@
         }
       },
       "put": {
+        "description": "Example url: /r/ib-office/posts",
         "summary": "create post",
         "tags": [
           "post",
@@ -332,15 +336,25 @@
         }
       }
     },
-    "/r/{region}/{postId}{any}/": {
+    "/r/{region}/p/{postId}{any}/": {
       "parameters": [
         {
           "in": "path",
           "name": "region",
           "schema": {
-            "type": "string",
-            "example": "ib-office",
-            "description": "this is the region NAME of the post"
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "ib-office",
+                "description": "the region NAME of the post"
+              },
+              {
+                "type": "string",
+                "example": "DP/resources",
+                "pattern": "parent_region/child_region",
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed"
+              }
+            ]
           }
         },
         {
@@ -362,8 +376,8 @@
           }
         }
       ],
-      "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
       "get": {
+        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
         "summary": "get post",
         "tags": [
           "post",
@@ -411,7 +425,7 @@
           "developing"
         ],
         "summary": "delete post",
-        "description": "Only the creator of the poster or administer of the region is capable for deleting posts",
+        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/<br>Only the creator of the poster or administer of the region is capable for deleting posts",
         "parameters": [],
         "responses": {
           "200": {
@@ -458,6 +472,112 @@
           }
         }
       }
+    },
+    "/r/{region}/p/{postId}{any}/comments": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "region",
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "ib-office",
+                "description": "this is the region NAME of the post"
+              },
+              {
+                "type": "string",
+                "example": "DP/resources",
+                "pattern": "parent_region/child_region",
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed"
+              }
+            ]
+          }
+        },
+        {
+          "in": "path",
+          "name": "postId",
+          "schema": {
+            "type": "string",
+            "example": "AXPYAOfpEi"
+          }
+        },
+        {
+          "in": "path",
+          "name": "any",
+          "allowEmptyValue": true,
+          "schema": {
+            "pattern": "-ANYTHING",
+            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
+            "example": "-how-to-get-seven-in-math-HL"
+          }
+        }
+      ],
+      "get": {
+        "summary": "get comments under post",
+        "tags": [
+          "comment",
+          "developing"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query_mark"
+          },
+          {
+            "$ref": "#/components/parameters/skip"
+          },
+          {
+            "$ref": "#/components/parameters/amount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "properties": {
+                        "comments": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/comment"
+                          }
+                        },
+                        "query_mark": {
+                          "$ref": "#/components/schemas/query_mark"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -479,6 +599,15 @@
           "minimum": 1,
           "maximum": 50,
           "required": "false"
+        }
+      },
+      "skip": {
+        "name": "skip",
+        "in": "query",
+        "description": "skip number of objects, this will be ignored if \"after\" query mark is present",
+        "schema": {
+          "type": "integer",
+          "example": 10
         }
       }
     },
