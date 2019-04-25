@@ -32,6 +32,9 @@
     {
       "name": "comment",
       "description": "Comment related request / query"
+    },
+    {
+      "name": "user"
     }
   ],
   "x-tagGroups": [
@@ -46,6 +49,142 @@
     }
   ],
   "paths": {
+    "/login": {
+      "post": {
+        "summary": "login",
+        "parameters": [],
+        "tags": [
+          "general",
+          "developing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "account": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "12345@kcisec.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "x2YE7LJMOR",
+                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
+                    "minLength": 6,
+                    "description": "plain text password"
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "google recaptcha validation token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "login success, may continue"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "description": "Authorization failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "PASSWORD_USERNAME_INCORRECT",
+                        "FAILED_CAPTCHA_VALIDATION"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "enum": [
+                    "FormBased"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User banned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "user banned",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "USER_BANNED"
+                      ]
+                    },
+                    "banned_type": {
+                      "type": "object",
+                      "properties": {
+                        "scope": {
+                          "type": "string",
+                          "enum": [
+                            "ALL"
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "due to use of word \"FUCK\" in public regions",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "logout",
+        "tags": [
+          "general"
+        ],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          }
+        }
+      }
+    },
     "/feed": {
       "get": {
         "tags": [
@@ -131,12 +270,24 @@
           "allowEmptyValue": false,
           "schema": {
             "type": "string",
-            "example": "ib-office"
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "ib-office",
+                "description": "this is the region NAME of the post<br>Example: ib-office"
+              },
+              {
+                "type": "string",
+                "example": "DP/resources",
+                "pattern": "parent_region/child_region",
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
+              }
+            ]
           }
         }
       ],
       "get": {
-        "description": "Example url: /r/ib-office",
+        "description": "Example url: /r/ib-office or /r/DP/resources",
         "tags": [
           "regional",
           "developing"
@@ -190,7 +341,19 @@
           "allowEmptyValue": false,
           "schema": {
             "type": "string",
-            "example": "ib-office"
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "ib-office",
+                "description": "this is the region NAME of the post<br>Example: ib-office"
+              },
+              {
+                "type": "string",
+                "example": "DP/resources",
+                "pattern": "parent_region/child_region",
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
+              }
+            ]
           }
         }
       ],
@@ -346,13 +509,13 @@
               {
                 "type": "string",
                 "example": "ib-office",
-                "description": "the region NAME of the post"
+                "description": "this is the region NAME of the post<br>Example: ib-office"
               },
               {
                 "type": "string",
                 "example": "DP/resources",
                 "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed"
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
               }
             ]
           }
@@ -483,13 +646,13 @@
               {
                 "type": "string",
                 "example": "ib-office",
-                "description": "this is the region NAME of the post"
+                "description": "this is the region NAME of the post<br>Example: ib-office"
               },
               {
                 "type": "string",
                 "example": "DP/resources",
                 "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed"
+                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
               }
             ]
           }
@@ -845,7 +1008,7 @@
                         false
                       ]
                     },
-                    "message": {
+                    "type": {
                       "type": "string",
                       "enum": [
                         "AUTHORIZATION_DENIED"
@@ -862,7 +1025,7 @@
                         false
                       ]
                     },
-                    "message": {
+                    "type": {
                       "type": "string",
                       "enum": [
                         "USER_BANNED"
@@ -904,7 +1067,7 @@
                     false
                   ]
                 },
-                "message": {
+                "type": {
                   "type": "string",
                   "enum": [
                     "AUTHORIZATION_MISSING",
@@ -912,6 +1075,15 @@
                   ]
                 }
               }
+            }
+          }
+        },
+        "headers": {
+          "WWW-Authenticate": {
+            "schema": {
+              "enum": [
+                "FormBased"
+              ]
             }
           }
         }
@@ -928,7 +1100,7 @@
                     false
                   ]
                 },
-                "message": {
+                "type": {
                   "type": "string",
                   "enum": [
                     "NOT_FOUND"
@@ -951,7 +1123,7 @@
                     false
                   ]
                 },
-                "message": {
+                "type": {
                   "type": "string",
                   "enum": [
                     "INTERNAL_ERROR"
