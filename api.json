@@ -310,7 +310,38 @@
                       ]
                     },
                     "data": {
-                      "$ref": "#/components/schemas/region"
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/region"
+                        },
+                        {
+                          "example": {
+                            "name": "DP",
+                            "parent": null,
+                            "region_id": "dkjkaljfd",
+                            "description": "region for talking things about DP",
+                            "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
+                            "top_posts": [],
+                            "post_mark": "5c7fc05f802b95782f1f9e88",
+                            "child_region": [
+                              "resources"
+                            ]
+                          }
+                        },
+                        {
+                          "properties": {
+                            "child_region": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "description": "name of child region",
+                                "example": "resources"
+                              }
+                            }
+                          }
+                        }
+                      ]
                     }
                   }
                 }
@@ -780,7 +811,12 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "ib-office"
+            "example": "chat-room"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "example": "DP"
           },
           "region_id": {
             "type": "string",
@@ -788,7 +824,7 @@
           },
           "description": {
             "type": "string",
-            "example": "region for ib office to post annunciation"
+            "example": "region for talking about things about DP"
           },
           "avatar": {
             "type": "string",
@@ -817,6 +853,10 @@
           "post_id": {
             "type": "string",
             "example": "AXPYAOfpEi"
+          },
+          "region_id": {
+            "type": "string",
+            "example": "dkjkaljfd"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -848,6 +888,29 @@
             "type": "string",
             "example": "AXPYAOfpEi"
           },
+          "region_id": {
+            "type": "string",
+            "example": "dkjkaljfd"
+          },
+          "author": {
+            "$ref": "#/components/schemas/user"
+          },
+          "create_time_stamp": {
+            "$ref": "#/components/schemas/create_timestamp"
+          },
+          "update_time_stamp": {
+            "$ref": "#/components/schemas/update_timestamp"
+          },
+          "content": {
+            "type": "string",
+            "example": "lalala"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/attachment"
+            }
+          },
           "comments": {
             "type": "array",
             "required": "true",
@@ -869,12 +932,7 @@
               }
             ]
           }
-        },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/content_base"
-          }
-        ]
+        }
       },
       "user": {
         "type": "object",
@@ -927,29 +985,6 @@
           }
         }
       },
-      "content_base": {
-        "properties": {
-          "author": {
-            "$ref": "#/components/schemas/user"
-          },
-          "create_time_stamp": {
-            "$ref": "#/components/schemas/create_timestamp"
-          },
-          "update_time_stamp": {
-            "$ref": "#/components/schemas/update_timestamp"
-          },
-          "content": {
-            "type": "string",
-            "example": "lalala"
-          },
-          "attachments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/attachment"
-            }
-          }
-        }
-      },
       "attachment": {
         "type": "object",
         "properties": {
@@ -986,7 +1021,8 @@
         "minLength": "24",
         "maxLength": "24",
         "required": "false",
-        "example": "5c7fc05f802b95782f1f9e88"
+        "example": "5c7fc05f802b95782f1f9e88",
+        "nullable": true
       }
     },
     "responses": {
