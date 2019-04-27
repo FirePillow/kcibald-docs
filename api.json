@@ -8,6 +8,20 @@
       "name": "wusatosi"
     }
   },
+  "servers": [
+    {
+      "url": "https://www.kcibald.com",
+      "description": "production server end point, Content-Type header should be application/json"
+    },
+    {
+      "url": "https://api.kcibald.com",
+      "description": "production server end Point, only accept Content-Type application/json"
+    },
+    {
+      "url": "https://api-testing.develop.kcibald.com",
+      "description": "testing / staging server end point"
+    }
+  ],
   "tags": [
     {
       "name": "stable",
@@ -34,14 +48,26 @@
       "description": "Comment related request / query"
     },
     {
-      "name": "user"
+      "name": "user",
+      "description": "user information"
+    },
+    {
+      "name": "config",
+      "description": "changing their state"
     }
   ],
   "x-tagGroups": [
     {
-      "name": "feed",
+      "name": "general",
       "tags": [
         "general",
+        "config"
+      ]
+    },
+    {
+      "name": "feed",
+      "tags": [
+        "user",
         "regional",
         "post",
         "comment"
@@ -177,14 +203,18 @@
         "parameters": [],
         "responses": {
           "204": {
-            "description": "Success"
+            "description": "Logout successful"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
     },
+    "/registry": {},
     "/feed": {
       "get": {
         "tags": [
@@ -363,6 +393,29 @@
         }
       }
     },
+    "/r/{region}/subscribe": {
+      "post": {
+        "summary": "subscribe to a region",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Subscription successful"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          }
+        }
+      }
+    },
     "/r/{region}/p/": {
       "parameters": [
         {
@@ -530,11 +583,12 @@
         }
       }
     },
-    "/r/{region}/p/{postId}{any}/": {
+    "/r/{region}/p/{any}{postId}/": {
       "parameters": [
         {
           "in": "path",
           "name": "region",
+          "required": true,
           "schema": {
             "anyOf": [
               {
@@ -554,6 +608,7 @@
         {
           "in": "path",
           "name": "postId",
+          "required": true,
           "schema": {
             "type": "string",
             "example": "AXPYAOfpEi"
@@ -564,14 +619,14 @@
           "name": "any",
           "allowEmptyValue": true,
           "schema": {
-            "pattern": "-ANYTHING",
-            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
-            "example": "-how-to-get-seven-in-math-HL"
+            "pattern": "ANYTHING-",
+            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should end with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
+            "example": "how-to-get-seven-in-math-HL-"
           }
         }
       ],
       "get": {
-        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
+        "description": "Example request: /r/ib-office/why-not-to-choice-physics-HL-AXPYAOfpEi/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
         "summary": "get post",
         "tags": [
           "post",
@@ -667,11 +722,12 @@
         }
       }
     },
-    "/r/{region}/p/{postId}{any}/comments": {
+    "/r/{region}/p/{any}{postId}/comments": {
       "parameters": [
         {
           "in": "path",
           "name": "region",
+          "required": true,
           "schema": {
             "anyOf": [
               {
@@ -691,6 +747,7 @@
         {
           "in": "path",
           "name": "postId",
+          "required": true,
           "schema": {
             "type": "string",
             "example": "AXPYAOfpEi"
@@ -699,11 +756,12 @@
         {
           "in": "path",
           "name": "any",
+          "required": false,
           "allowEmptyValue": true,
           "schema": {
-            "pattern": "-ANYTHING",
-            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
-            "example": "-how-to-get-seven-in-math-HL"
+            "pattern": "ANYTHING-",
+            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start end character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
+            "example": "how-to-get-seven-in-math-HL-"
           }
         }
       ],
@@ -770,6 +828,155 @@
           "500": {
             "$ref": "#/components/responses/server_failure"
           }
+        }
+      }
+    },
+    "/u/{userName}{userId}/": {
+      "get": {
+        "summary": "Get user information",
+        "tags": [
+          "user",
+          "developing"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userName",
+            "description": "similar to {any} in /r/{region}/p/{any}{postId}, server will not validate this field, but do mind it need to compliant with URL schema and MUST NOT use character '/'",
+            "schema": {
+              "type": "string",
+              "pattern": "USERNAME-"
+            }
+          }
+        ],
+        "responses": {
+        }
+      }
+    },
+    "/u/{userName}/feed/": {
+      "get": {
+        "summary": "get user feed",
+        "tags": [
+          "post",
+          "user",
+          "develop"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/": {
+      "get": {
+        "summary": "get my profile",
+        "tags": [
+          "user",
+          "develop"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/feed/": {
+      "get": {
+        "summary": "get my feed",
+        "tags": [
+          "post",
+          "user",
+          "develop"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/subscriptions/": {
+      "get": {
+        "summary": "get my subscriptions",
+        "tags": [
+          "user",
+          "develop"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/profile/credentials": {
+      "post": {
+        "summary": "modify user credentials",
+        "tags": [
+          "user",
+          "config"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/profile/email": {
+      "post": {
+        "summary": "update user email",
+        "tags": [
+          "user",
+          "config"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+        }
+      }
+    },
+    "/me/profile/avatar": {
+      "post": {
+        "summary": "update user avatar",
+        "tags": [
+          "user",
+          "config",
+          "develop"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      }
+    },
+    "/me/settings": {
+      "get": {
+        "summary": "get user setting",
+        "tags": [
+          "user",
+          "developing"
+        ],
+        "parameters": [],
+        "responses": {
+        }
+      },
+      "post": {
+        "summary": "update user settings",
+        "tags": [
+          "user",
+          "config",
+          "developing"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+
+        }
+      }
+    },
+    "/_/upload": {
+      "put": {
+        "summary": "request an upload",
+        "tags": [
+          "general",
+          "developing"
+        ],
+        "parameters": [
+        ],
+        "responses": {
         }
       }
     }
@@ -1020,7 +1227,7 @@
         "format": "hexadecimal",
         "minLength": "24",
         "maxLength": "24",
-        "required": "false",
+        "required": false,
         "example": "5c7fc05f802b95782f1f9e88",
         "nullable": true
       }
