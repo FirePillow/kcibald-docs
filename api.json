@@ -134,7 +134,7 @@
                       "type": "string",
                       "enum": [
                         "PASSWORD_USERNAME_INCORRECT",
-                        "FAILED_CAPTCHA_VALIDATION"
+                        "CAPTCHA_VERIFICATION_FAILED"
                       ]
                     }
                   }
@@ -190,6 +190,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -960,10 +963,8 @@
           "developing"
         ],
         "parameters": [
-
         ],
         "responses": {
-
         }
       }
     },
