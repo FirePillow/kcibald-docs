@@ -67,10 +67,10 @@
     {
       "name": "feed",
       "tags": [
-        "user",
         "regional",
         "post",
-        "comment"
+        "comment",
+        "user"
       ]
     }
   ],
@@ -133,7 +133,7 @@
                     "type": {
                       "type": "string",
                       "enum": [
-                        "PASSWORD_USERNAME_INCORRECT",
+                        "PASSWORD_OR_ACCOUNT_EMAIL_INCORRECT",
                         "CAPTCHA_VERIFICATION_FAILED"
                       ]
                     }
@@ -217,7 +217,18 @@
         }
       }
     },
-    "/registry": {},
+    "/registry": {
+      "post": {
+        "summary": "registry an user",
+        "tags": [
+          "general"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+        }
+      }
+    },
     "/feed": {
       "get": {
         "tags": [
@@ -294,33 +305,26 @@
         }
       }
     },
-    "/r/{region}/": {
+    "/_/upload": {
+      "put": {
+        "summary": "request an upload",
+        "tags": [
+          "general",
+          "developing"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+        }
+      }
+    },
+    "/r/{regionId}/": {
       "parameters": [
         {
-          "in": "path",
-          "name": "region",
-          "required": true,
-          "allowEmptyValue": false,
-          "schema": {
-            "type": "string",
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "ib-office",
-                "description": "this is the region NAME of the post<br>Example: ib-office"
-              },
-              {
-                "type": "string",
-                "example": "DP/resources",
-                "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
-              }
-            ]
-          }
+          "$ref": "#/components/parameters/regionId"
         }
       ],
       "get": {
-        "description": "Example url: /r/ib-office or /r/DP/resources",
         "tags": [
           "regional",
           "developing"
@@ -348,30 +352,53 @@
                           "$ref": "#/components/schemas/region"
                         },
                         {
+                          "properties": {
+                            "top_posts": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/post_head"
+                              },
+                              "maxItems": "20"
+                            },
+                            "post_mark": {
+                              "$ref": "#/components/schemas/query_mark"
+                            },
+                            "child_region": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "$ref": "#/components/schemas/region"
+                              }
+                            }
+                          }
+                        },
+                        {
                           "example": {
                             "name": "DP",
+                            "url_key": "DP",
                             "parent": null,
-                            "region_id": "dkjkaljfd",
+                            "regionId": "dkjkaljfd",
                             "description": "region for talking things about DP",
                             "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
                             "top_posts": [],
                             "post_mark": "5c7fc05f802b95782f1f9e88",
                             "child_region": [
-                              "resources"
-                            ]
-                          }
-                        },
-                        {
-                          "properties": {
-                            "child_region": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "string",
-                                "description": "name of child region",
-                                "example": "resources"
+                              {
+                                "name": "chat room",
+                                "url_key": "DP/chat-room",
+                                "parent": {
+                                  "name": "DP",
+                                  "url_key": "DP",
+                                  "parent": null,
+                                  "regionId": "dkjkaljfd",
+                                  "description": "region for talking things about DP",
+                                  "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+                                },
+                                "regionId": "dkjkaljfd",
+                                "description": "region for talking about things about DP",
+                                "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                               }
-                            }
+                            ]
                           }
                         }
                       ]
@@ -396,8 +423,17 @@
         }
       }
     },
-    "/r/{region}/subscribe": {
+    "/r/{regionId}/subscribe": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/regionId"
+        }
+      ],
       "post": {
+        "tags": [
+          "developing",
+          "post"
+        ],
         "summary": "subscribe to a region",
         "parameters": [],
         "responses": {
@@ -419,29 +455,10 @@
         }
       }
     },
-    "/r/{region}/p/": {
+    "/r/{regionId}/p/": {
       "parameters": [
         {
-          "in": "path",
-          "name": "region",
-          "required": true,
-          "allowEmptyValue": false,
-          "schema": {
-            "type": "string",
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "ib-office",
-                "description": "this is the region NAME of the post<br>Example: ib-office"
-              },
-              {
-                "type": "string",
-                "example": "DP/resources",
-                "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
-              }
-            ]
-          }
+          "$ref": "#/components/parameters/regionId"
         }
       ],
       "get": {
@@ -586,54 +603,20 @@
         }
       }
     },
-    "/r/{region}/p/{any}{postId}/": {
+    "/r/{regionId}/p/{postId}/": {
       "parameters": [
         {
-          "in": "path",
-          "name": "region",
-          "required": true,
-          "schema": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "ib-office",
-                "description": "this is the region NAME of the post<br>Example: ib-office"
-              },
-              {
-                "type": "string",
-                "example": "DP/resources",
-                "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
-              }
-            ]
-          }
+          "$ref": "#/components/parameters/regionId"
         },
         {
-          "in": "path",
-          "name": "postId",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
-          }
-        },
-        {
-          "in": "path",
-          "name": "any",
-          "allowEmptyValue": true,
-          "schema": {
-            "pattern": "ANYTHING-",
-            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should end with character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
-            "example": "how-to-get-seven-in-math-HL-"
-          }
+          "$ref": "#/components/parameters/postId"
         }
       ],
       "get": {
-        "description": "Example request: /r/ib-office/why-not-to-choice-physics-HL-AXPYAOfpEi/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/",
         "summary": "get post",
         "tags": [
-          "post",
-          "developing"
+          "developing",
+          "post"
         ],
         "parameters": [],
         "responses": {
@@ -673,11 +656,10 @@
       },
       "delete": {
         "tags": [
-          "post",
-          "developing"
+          "developing",
+          "post"
         ],
         "summary": "delete post",
-        "description": "Example request: /r/ib-office/AXPYAOfpEi-why-not-to-choice-physics-HL/<br>Which is equivalent to /r/ib-office/AXPYAOfpEi/<br>Only the creator of the poster or administer of the region is capable for deleting posts",
         "parameters": [],
         "responses": {
           "200": {
@@ -725,54 +707,20 @@
         }
       }
     },
-    "/r/{region}/p/{any}{postId}/comments": {
+    "/r/{regionId}/p/{postId}/comments": {
       "parameters": [
         {
-          "in": "path",
-          "name": "region",
-          "required": true,
-          "schema": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "ib-office",
-                "description": "this is the region NAME of the post<br>Example: ib-office"
-              },
-              {
-                "type": "string",
-                "example": "DP/resources",
-                "pattern": "parent_region/child_region",
-                "description": "the child region name under the parent region, depth can only be two at maximum, means parent_region/child_region/sub_region or deeper directory is not allowed<br>Example:DP/resources"
-              }
-            ]
-          }
+          "$ref": "#/components/parameters/regionId"
         },
         {
-          "in": "path",
-          "name": "postId",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
-          }
-        },
-        {
-          "in": "path",
-          "name": "any",
-          "required": false,
-          "allowEmptyValue": true,
-          "schema": {
-            "pattern": "ANYTHING-",
-            "description": "Server will ignore content in this section, this is meant to help url to be human readable<br>If this parameter is provided, it should start end character '-'<br>Do mind it need to be compatible with url theme, and prevent using character '/'",
-            "example": "how-to-get-seven-in-math-HL-"
-          }
+          "$ref": "#/components/parameters/postId"
         }
       ],
       "get": {
         "summary": "get comments under post",
         "tags": [
-          "comment",
-          "developing"
+          "developing",
+          "comment"
         ],
         "parameters": [
           {
@@ -834,29 +782,28 @@
         }
       }
     },
-    "/u/{userName}{userId}/": {
+    "/u/{userId}/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/userId"
+        }
+      ],
       "get": {
-        "summary": "Get user information",
+        "summary": "get user information",
         "tags": [
-          "user",
-          "developing"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "userName",
-            "description": "similar to {any} in /r/{region}/p/{any}{postId}, server will not validate this field, but do mind it need to compliant with URL schema and MUST NOT use character '/'",
-            "schema": {
-              "type": "string",
-              "pattern": "USERNAME-"
-            }
-          }
+          "developing",
+          "user"
         ],
         "responses": {
         }
       }
     },
-    "/u/{userName}/feed/": {
+    "/u/{userId}/feed/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/userId"
+        }
+      ],
       "get": {
         "summary": "get user feed",
         "tags": [
@@ -898,8 +845,8 @@
       "get": {
         "summary": "get my subscriptions",
         "tags": [
-          "user",
-          "develop"
+          "develop",
+          "user"
         ],
         "parameters": [],
         "responses": {
@@ -910,34 +857,8 @@
       "post": {
         "summary": "modify user credentials",
         "tags": [
-          "user",
+          "developing",
           "config"
-        ],
-        "parameters": [],
-        "responses": {
-        }
-      }
-    },
-    "/me/profile/email": {
-      "post": {
-        "summary": "update user email",
-        "tags": [
-          "user",
-          "config"
-        ],
-        "parameters": [
-        ],
-        "responses": {
-        }
-      }
-    },
-    "/me/profile/avatar": {
-      "post": {
-        "summary": "update user avatar",
-        "tags": [
-          "user",
-          "config",
-          "develop"
         ],
         "parameters": [],
         "responses": {
@@ -948,35 +869,144 @@
       "get": {
         "summary": "get user setting",
         "tags": [
-          "user",
-          "developing"
+          "developing",
+          "config"
         ],
         "parameters": [],
         "responses": {
+          "200": {
+            "description": "Fetch Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "emails": {
+                      "type": "object",
+                      "properties": {
+                        "school": {
+                          "description": "kcis school's email (usually registration email)",
+                          "properties": {
+                            "address": {
+                              "type": "string",
+                              "format": "email"
+                            },
+                            "validated": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        "personal": {
+                          "description": "personal email",
+                          "properties": {
+                            "address": {
+                              "type": "string",
+                              "format": "email"
+                            },
+                            "validated": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "description": "url to avatar file"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
-      },
+      }
+    },
+    "/me/profile/email": {
       "post": {
-        "summary": "update user settings",
+        "summary": "update user email",
         "tags": [
-          "user",
-          "config",
-          "developing"
+          "developing",
+          "config"
         ],
-        "parameters": [
-        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email_type": {
+                    "type": "string",
+                    "enum": [
+                      "personal",
+                      "school"
+                    ]
+                  },
+                  "address": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "recaptcha validation token (for avoiding spam mail abuse)"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
         }
       }
     },
-    "/_/upload": {
-      "put": {
-        "summary": "request an upload",
+    "/me/profile/email/{emailType}/resend": {
+      "post": {
+        "summary": "resend verification email to the email address",
         "tags": [
-          "general",
-          "developing"
+          "developing",
+          "config"
         ],
         "parameters": [
+          {
+            "in": "path",
+            "name": "emailType",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "personal",
+                "school"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "captcha",
+            "schema": {
+              "type": "string",
+              "description": "recaptcha validation token (for avoiding spam mail abuse)"
+            }
+          }
         ],
+        "responses": {
+          "204": {
+            "description": "Request Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          }
+        }
+      }
+    },
+    "/me/profile/avatar": {
+      "post": {
+        "summary": "update user avatar",
+        "tags": [
+          "develop",
+          "config"
+        ],
+        "parameters": [],
         "responses": {
         }
       }
@@ -984,6 +1014,34 @@
   },
   "components": {
     "parameters": {
+      "regionId": {
+        "in": "path",
+        "name": "region",
+        "required": true,
+        "allowEmptyValue": false,
+        "schema": {
+          "type": "string",
+          "description": "the <b>region id</b> or the <b>url key</b> of the requested region"
+        }
+      },
+      "postId": {
+        "in": "path",
+        "name": "postId",
+        "required": true,
+        "allowEmptyValue": false,
+        "schema": {
+          "type": "string",
+          "description": "the <b>post id</b> or the <b>url key</b> of the requested post"
+        }
+      },
+      "userId": {
+        "in": "path",
+        "name": "userId",
+        "schema": {
+          "type": "string",
+          "description": "the <b>user id</b> or the <b>url key</b> of the requested user"
+        }
+      },
       "query_mark": {
         "in": "query",
         "name": "after",
@@ -1019,14 +1077,23 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "chat-room"
+            "example": "chat room"
+          },
+          "url_key": {
+            "type": "string",
+            "example": "DP/chat-room"
           },
           "parent": {
-            "type": "string",
-            "nullable": true,
-            "example": "DP"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/region"
+              },
+              {
+                "nullable": true
+              }
+            ]
           },
-          "region_id": {
+          "regionId": {
             "type": "string",
             "example": "dkjkaljfd"
           },
@@ -1037,16 +1104,6 @@
           "avatar": {
             "type": "string",
             "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-          },
-          "top_posts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/post_head"
-            },
-            "maxItems": "20"
-          },
-          "post_mark": {
-            "$ref": "#/components/schemas/query_mark"
           }
         }
       },
@@ -1058,11 +1115,15 @@
             "type": "string",
             "example": "why not to choice physics HL"
           },
-          "post_id": {
+          "postId": {
             "type": "string",
             "example": "AXPYAOfpEi"
           },
-          "region_id": {
+          "url_key": {
+            "type": "string",
+            "example": "why_not_to_choice_physics_HL"
+          },
+          "regionId": {
             "type": "string",
             "example": "dkjkaljfd"
           },
@@ -1087,32 +1148,12 @@
       },
       "post": {
         "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/post_head"
+          }
+        ],
         "properties": {
-          "title": {
-            "type": "string",
-            "example": "why not to choice physics HL"
-          },
-          "post_id": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
-          },
-          "region_id": {
-            "type": "string",
-            "example": "dkjkaljfd"
-          },
-          "author": {
-            "$ref": "#/components/schemas/user"
-          },
-          "create_time_stamp": {
-            "$ref": "#/components/schemas/create_timestamp"
-          },
-          "update_time_stamp": {
-            "$ref": "#/components/schemas/update_timestamp"
-          },
-          "content": {
-            "type": "string",
-            "example": "lalala"
-          },
           "attachments": {
             "type": "array",
             "items": {
@@ -1126,10 +1167,6 @@
               "$ref": "#/components/schemas/comment"
             },
             "maxItems": 20
-          },
-          "comment_count": {
-            "type": "integer",
-            "example": 50
           },
           "comment_query_mark": {
             "description": "use for paging comments, null if reached to the end",
@@ -1151,8 +1188,11 @@
           },
           "user_name": {
             "type": "string",
-            "maxLength": "50",
-            "example": "james"
+            "example": "james ye"
+          },
+          "url_key": {
+            "type": "string",
+            "example": "james_ye"
           },
           "signature": {
             "type": "string",
@@ -1333,7 +1373,7 @@
         }
       },
       "not_found": {
-        "description": "requested information not found",
+        "description": "Requested information not found",
         "content": {
           "application/json": {
             "schema": {
