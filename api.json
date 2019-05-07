@@ -113,80 +113,43 @@
         },
         "responses": {
           "204": {
-            "description": "login success, may continue"
+            "description": "Login success, may continue"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
-          },
-          "401": {
-            "description": "Authorization failure",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        false
-                      ]
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "PASSWORD_OR_ACCOUNT_EMAIL_INCORRECT",
-                        "CAPTCHA_VERIFICATION_FAILED"
-                      ]
-                    }
-                  }
-                }
-              }
-            },
-            "headers": {
-              "WWW-Authenticate": {
-                "schema": {
-                  "enum": [
-                    "FormBased"
-                  ]
-                }
-              }
-            }
           },
           "403": {
             "description": "User banned",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "user banned",
+                  "description": "login denied",
                   "properties": {
                     "success": {
                       "type": "boolean",
                       "enum": [
                         false
                       ]
+                    }
+                  },
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/user_banned_failure"
                     },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "USER_BANNED"
-                      ]
+                    {
+                      "$ref": "#/components/schemas/recaptcha_failure"
                     },
-                    "banned_type": {
-                      "type": "object",
+                    {
                       "properties": {
-                        "scope": {
+                        "type": {
                           "type": "string",
                           "enum": [
-                            "ALL"
+                            "PASSWORD_OR_ACCOUNT_EMAIL_INCORRECT"
                           ]
-                        },
-                        "reason": {
-                          "type": "string",
-                          "example": "due to use of word \"FUCK\" in public regions",
-                          "nullable": true
                         }
                       }
                     }
-                  }
+                  ]
                 }
               }
             }
@@ -412,7 +375,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -447,7 +410,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -515,7 +478,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -526,7 +489,6 @@
         }
       },
       "put": {
-        "description": "Example url: /r/ib-office/posts",
         "summary": "create post",
         "tags": [
           "post",
@@ -541,7 +503,8 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "example": "How to get a 7 in math HL"
+                    "example": "How to get a 7 in math HL",
+                    "maxLength": "???"
                   },
                   "content": {
                     "type": "string",
@@ -559,6 +522,10 @@
                         }
                       }
                     }
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "recaptcha token to avoid spamming"
                   }
                 }
               }
@@ -571,31 +538,62 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        true
-                      ]
-                    },
-                    "link": {
-                      "type": "string",
-                      "example": "www.kcibald.com/r/ib-office/akdadak",
-                      "description": "the link to created post"
+                  "anyOf": [
+                    {
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "link": {
+                          "type": "string",
+                          "example": "www.kcibald.com/r/ib-office/akdadak",
+                          "description": "the link to created post"
+                        }
+                      }
                     }
-                  }
+                  ]
                 }
               }
             }
           },
           "400": {
-            "$ref": "#/components/responses/bad_request"
+            "description": "Doesn't meet Post schema requirements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "TITLE_LENGTH_EXCEED"
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/invalid_attachment_failure"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "500": {
             "$ref": "#/components/responses/server_failure"
@@ -644,7 +642,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -771,7 +769,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/common_auth"
+            "$ref": "#/components/responses/banned_common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -779,6 +777,26 @@
           "500": {
             "$ref": "#/components/responses/server_failure"
           }
+        }
+      },
+      "post": {
+        "summary": "create an comment",
+        "tags": [
+          "developing",
+          "comment"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                }
+              }
+            }
+          }
+        },
+        "responses": {
         }
       }
     },
@@ -825,19 +843,48 @@
         ],
         "parameters": [],
         "responses": {
-        }
-      }
-    },
-    "/me/feed/": {
-      "get": {
-        "summary": "get my feed",
-        "tags": [
-          "post",
-          "user",
-          "develop"
-        ],
-        "parameters": [],
-        "responses": {
+          "200": {
+            "description": "Fetch success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/user"
+                        },
+                        {
+                          "properties": {
+                            "feed": {
+                              "properties": {
+                                "posts": {
+                                  "type": "array",
+                                  "maxItems": 20,
+                                  "items": {
+                                    "$ref": "#/components/schemas/post_head"
+                                  }
+                                },
+                                "mark": {
+                                  "$ref": "#/components/schemas/query_mark"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -850,24 +897,43 @@
         ],
         "parameters": [],
         "responses": {
-        }
-      }
-    },
-    "/me/profile/credentials": {
-      "post": {
-        "summary": "modify user credentials",
-        "tags": [
-          "developing",
-          "config"
-        ],
-        "parameters": [],
-        "responses": {
+          "200": {
+            "description": "Fetch success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/region"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          }
         }
       }
     },
     "/me/settings": {
       "get": {
         "summary": "get user setting",
+        "description": "list user's email address, avatar and signature setting",
         "tags": [
           "developing",
           "config"
@@ -906,6 +972,10 @@
                               "type": "boolean"
                             }
                           }
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "signature of the user"
                         }
                       }
                     },
@@ -917,6 +987,34 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      }
+    },
+    "/me/profile/credentials": {
+      "post": {
+        "summary": "modify user credentials",
+        "description": "change user's password",
+        "tags": [
+          "developing",
+          "config"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
           }
         }
       }
@@ -937,8 +1035,8 @@
                   "email_type": {
                     "type": "string",
                     "enum": [
-                      "personal",
-                      "school"
+                      "PERSONAL",
+                      "SCHOOL"
                     ]
                   },
                   "address": {
@@ -955,6 +1053,18 @@
           }
         },
         "responses": {
+          "204": {
+            "description": "Update success"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/recaptcha_auth"
+          }
         }
       }
     },
@@ -972,8 +1082,8 @@
             "schema": {
               "type": "string",
               "enum": [
-                "personal",
-                "school"
+                "PERSONAL",
+                "SCHOOL"
               ]
             }
           },
@@ -995,6 +1105,9 @@
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/recaptcha_auth"
           }
         }
       }
@@ -1064,7 +1177,7 @@
       "skip": {
         "name": "skip",
         "in": "query",
-        "description": "skip number of objects, this will be ignored if \"after\" query mark is present",
+        "description": "skip number of objects",
         "schema": {
           "type": "integer",
           "example": 10
@@ -1084,14 +1197,35 @@
             "example": "DP/chat-room"
           },
           "parent": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/region"
+            "description": "parent region",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "DP"
               },
-              {
-                "nullable": true
+              "url_key": {
+                "type": "string",
+                "example": "DP"
+              },
+              "parent": {
+                "enum": [
+                  null
+                ]
+              },
+              "regionId": {
+                "type": "string",
+                "example": "dkjkaljfd"
+              },
+              "description": {
+                "type": "string",
+                "example": "DP region"
+              },
+              "avatar": {
+                "type": "string",
+                "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
               }
-            ]
+            }
           },
           "regionId": {
             "type": "string",
@@ -1209,6 +1343,9 @@
       "comment": {
         "type": "object",
         "properties": {
+          "comment_id": {
+            "type": "string"
+          },
           "author": {
             "$ref": "#/components/schemas/user"
           },
@@ -1271,70 +1408,149 @@
         "required": false,
         "example": "5c7fc05f802b95782f1f9e88",
         "nullable": true
+      },
+      "recaptcha_failure": {
+        "description": "Recaptcha verification failed",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CAPTCHA_VERIFICATION_FAILED"
+            ]
+          }
+        }
+      },
+      "authorization_failure": {
+        "description": "denied",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "AUTHORIZATION_DENIED"
+            ]
+          }
+        }
+      },
+      "user_banned_failure": {
+        "description": "user banned",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "USER_BANNED"
+            ]
+          },
+          "banned_type": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "CURRENT",
+                  "ALL"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "example": "due to use of word \"FUCK\" in public regions",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "invalid_attachment_failure": {
+        "description": "attachment token invalid",
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ATTACHMENT_INVALID_ID",
+              "ATTACHMENT_FILE_NOT_UPLOADED"
+            ]
+          }
+        }
       }
     },
     "responses": {
       "bad_request": {
         "description": "Bad request"
       },
-      "common_auth": {
-        "description": "Standard authorization failure",
+      "banned_common_auth": {
+        "description": "Standard authorization failure or user banned",
         "content": {
           "application/json": {
             "schema": {
               "anyOf": [
                 {
-                  "description": "denied",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        false
-                      ]
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "AUTHORIZATION_DENIED"
-                      ]
-                    }
-                  }
+                  "$ref": "#/components/schemas/authorization_failure"
                 },
                 {
-                  "description": "user banned",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        false
-                      ]
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "USER_BANNED"
-                      ]
-                    },
-                    "banned_type": {
-                      "type": "object",
-                      "properties": {
-                        "scope": {
-                          "type": "string",
-                          "enum": [
-                            "CURRENT",
-                            "ALL"
-                          ]
-                        },
-                        "reason": {
-                          "type": "string",
-                          "example": "due to use of word \"FUCK\" in public regions",
-                          "nullable": true
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/user_banned_failure"
                 }
               ]
+            }
+          }
+        }
+      },
+      "common_auth": {
+        "description": "Standard authorization failure",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/authorization_failure"
+            }
+          }
+        }
+      },
+      "recaptcha_standard_nonbanable_auth": {
+        "description": "Recaptcha failure or standard authorization failure",
+        "content": {
+          "application/json": {
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/recaptcha_failure"
+                },
+                {
+                  "$ref": "#/components/schemas/authorization_failure"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "recaptcha_auth": {
+        "description": "Recaptcha failure",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/recaptcha_failure"
             }
           }
         }
@@ -1355,7 +1571,7 @@
                   "type": "string",
                   "enum": [
                     "AUTHORIZATION_MISSING",
-                    "AUTHORIZATION_EXPIRED"
+                    "AUTHORIZATION_INVALID"
                   ]
                 }
               }
