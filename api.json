@@ -1570,8 +1570,7 @@
                 "type": {
                   "type": "string",
                   "enum": [
-                    "AUTHORIZATION_MISSING",
-                    "AUTHORIZATION_INVALID"
+                    "AUTHORIZATION_MISSING_OR_INVALID"
                   ]
                 }
               }
