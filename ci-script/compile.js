@@ -3,28 +3,15 @@ let readFileSync = require("fs").readFileSync;
 
 let loadAndBundleSpec = require("redoc").loadAndBundleSpec;
 let dirname = require("path").dirname;
-let writeFileSync = require("fs").writeFileSync;
-let copyFileSync = require("fs").copyFileSync;
+let fs = require("fs");
 let createStore = require('redoc').createStore;
-let ServerStyleSheet = require('styled-components').ServerStyleSheet
+let ServerStyleSheet = require('styled-components').ServerStyleSheet;
 let renderToString = require('react-dom/server').renderToString;
 let React = require('react');
 let Redoc = require('redoc').Redoc;
 let compile = require('handlebars').compile;
 
-let redoc_version = require('./package').dependencies.redoc
-
-let ossStore;
-if (process.env.oss_region && process.env.oss_accessKeyId && process.env.oss_accessKeySecret && process.env.bucket_name) {
-    let oss = require('ali-oss');
-    ossStore = oss({
-        region: process.env.oss_region,
-        accessKeyId: process.env.oss_accessKeyId,
-        accessKeySecret: process.env.oss_accessKeySecret,
-        bucket: process.env.bucket_name
-    });
-} else
-    ossStore = null
+let redoc_version = require('../package').dependencies.redoc;
 
 const configFilePath = 'api.json';
 const uploadFileName = 'index.html';
@@ -49,17 +36,13 @@ const uploadFileName = 'index.html';
             title: `${spec.info.title} documtation`
         });
 
-        if (ossStore) {
-            console.log(`uploading using access key ${process.env.oss_accessKeyId}`)
-            let promiseHTML = ossStore.put(uploadFileName, Buffer.from(result));
-            let promiseConfig = ossStore.put(configFilePath, configFilePath);
-            await Promise.all([promiseHTML, promiseConfig])
-        } else {
-            writeFileSync('output/' + uploadFileName, result)
-            copyFileSync(configFilePath, 'output/' + configFilePath)
+        if (!fs.existsSync('output')){
+            fs.mkdirSync('output');
         }
+        fs.writeFileSync('output/' + uploadFileName, result);
+        fs.copyFileSync(configFilePath, 'output/' + configFilePath)
     } catch (e) {
-        console.log(e)
+        console.log(e);
         process.exit(-1)
     }
 })();
