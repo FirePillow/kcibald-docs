@@ -34,7 +34,7 @@ jobs:
       - run: npm run compile
 
       - save_cache:
-          path:
+          paths:
             - output
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
