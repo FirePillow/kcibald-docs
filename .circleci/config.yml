@@ -35,7 +35,7 @@ jobs:
 
       - save_cache:
           paths:
-#            prepare for next job
+            # prepare for next job
             - output
             - ci-script
             - package.json
@@ -64,6 +64,6 @@ workflows:
       - deploy:
           requires:
             - build
-          branches:
-            only:
-              - master
+          filters:
+            branches:
+              only: master
