@@ -374,7 +374,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -409,7 +409,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -477,7 +477,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -592,7 +592,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "500": {
             "$ref": "#/components/responses/server_failure"
@@ -641,7 +641,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -768,7 +768,7 @@
             "$ref": "#/components/responses/no_authorization"
           },
           "403": {
-            "$ref": "#/components/responses/banned_common_auth"
+            "$ref": "#/components/responses/common_auth"
           },
           "404": {
             "$ref": "#/components/responses/not_found"
@@ -1439,6 +1439,11 @@
             "enum": [
               "AUTHORIZATION_DENIED"
             ]
+          },
+          "message": {
+            "type": "string",
+            "example": "you can create posts in this region",
+            "nullable": true
           }
         }
       },
@@ -1460,17 +1465,19 @@
           "banned_type": {
             "type": "object",
             "properties": {
-              "scope": {
+              "message": {
                 "type": "string",
-                "enum": [
-                  "CURRENT",
-                  "ALL"
-                ]
-              },
-              "reason": {
-                "type": "string",
-                "example": "due to use of word \"FUCK\" in public regions",
+                "example": "you violated our terms",
                 "nullable": true
+              },
+              "permanent": {
+                "type": "boolean",
+                "description": "if it is permanent ban"
+              },
+              "time_to_unban": {
+                "type": "integer",
+                "format": "int64",
+                "description": "timestamp of unban, -1 if is permanent ban"
               }
             }
           }
@@ -1500,46 +1507,12 @@
       "bad_request": {
         "description": "Bad request"
       },
-      "banned_common_auth": {
-        "description": "Standard authorization failure or user banned",
-        "content": {
-          "application/json": {
-            "schema": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/authorization_failure"
-                },
-                {
-                  "$ref": "#/components/schemas/user_banned_failure"
-                }
-              ]
-            }
-          }
-        }
-      },
       "common_auth": {
         "description": "Standard authorization failure",
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/authorization_failure"
-            }
-          }
-        }
-      },
-      "recaptcha_standard_nonbanable_auth": {
-        "description": "Recaptcha failure or standard authorization failure",
-        "content": {
-          "application/json": {
-            "schema": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/recaptcha_failure"
-                },
-                {
-                  "$ref": "#/components/schemas/authorization_failure"
-                }
-              ]
             }
           }
         }
