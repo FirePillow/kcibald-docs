@@ -258,9 +258,6 @@
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
-          "403": {
-            "$ref": "#/components/responses/common_auth"
-          },
           "500": {
             "$ref": "#/components/responses/server_failure"
           }
@@ -1014,6 +1011,9 @@
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1041,10 +1041,6 @@
                   "address": {
                     "type": "string",
                     "format": "email"
-                  },
-                  "captcha": {
-                    "type": "string",
-                    "description": "recaptcha validation token (for avoiding spam mail abuse)"
                   }
                 }
               }
@@ -1061,8 +1057,8 @@
           "401": {
             "$ref": "#/components/responses/no_authorization"
           },
-          "403": {
-            "$ref": "#/components/responses/recaptcha_auth"
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1107,6 +1103,9 @@
           },
           "403": {
             "$ref": "#/components/responses/recaptcha_auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1119,6 +1118,13 @@
           "config"
         ],
         "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+
+            }
+          }
+        },
         "responses": {
         }
       }
@@ -1469,10 +1475,6 @@
                 "type": "string",
                 "example": "you violated our terms",
                 "nullable": true
-              },
-              "permanent": {
-                "type": "boolean",
-                "description": "if it is permanent ban"
               },
               "time_to_unban": {
                 "type": "integer",
