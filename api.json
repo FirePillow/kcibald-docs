@@ -10,16 +10,12 @@
   },
   "servers": [
     {
-      "url": "https://www.kcibald.com",
-      "description": "production server end point, Content-Type header should be application/json"
+      "url": "https://api.kcibald.com/v1/",
+      "description": "production server end Point"
     },
     {
-      "url": "https://api.kcibald.com",
-      "description": "production server end Point, only accept Content-Type application/json"
-    },
-    {
-      "url": "https://api-testing.develop.kcibald.com",
-      "description": "testing / staging server end point"
+      "url": "https://api-testing.develop.kcibald.com/v1/",
+      "description": "testing / staging server end point, using test / static data"
     }
   ],
   "tags": [
