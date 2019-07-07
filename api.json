@@ -1004,6 +1004,30 @@
           "developing",
           "config"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "original_password": {
+                    "type": "string",
+                    "description": "user's original password",
+                    "required": true
+                  },
+                  "new_password": {
+                    "type": "string",
+                    "description": "password that user is going to change to"
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "google recaptcha token"
+                  }
+                }
+              }
+            }
+          }
+        },
         "parameters": [],
         "responses": {
           "400": {
