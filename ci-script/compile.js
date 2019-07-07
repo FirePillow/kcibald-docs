@@ -10,6 +10,7 @@ let renderToString = require('react-dom/server').renderToString;
 let React = require('react');
 let Redoc = require('redoc').Redoc;
 let compile = require('handlebars').compile;
+let git = require('git-rev-sync');
 
 let redoc_version = require('../package').dependencies.redoc;
 
@@ -33,10 +34,14 @@ const uploadFileName = 'index.html';
             redoc_styles: css,
             redocjs:
                 `<script src="https://cdn.jsdelivr.net/npm/redoc@${redoc_version}/bundles/redoc.standalone.min.js"></script>`,
-            title: `${spec.info.title} documtation`
+            title: `${spec.info.title} documtation`,
+            buildTime: new Date(),
+            buildBranchName: git.branch(),
+            buildCommit: `${git.short()} (${git.message()})`,
+            buildCommitUrl: `https://github.com/FirePillow/kcibald-docs/commit/${git.long()}`
         });
 
-        if (!fs.existsSync('output')){
+        if (!fs.existsSync('output')) {
             fs.mkdirSync('output');
         }
         fs.writeFileSync('output/' + uploadFileName, result);
