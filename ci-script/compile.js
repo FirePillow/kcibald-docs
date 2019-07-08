@@ -11,6 +11,7 @@ let React = require('react');
 let Redoc = require('redoc').Redoc;
 let compile = require('handlebars').compile;
 let git = require('git-rev-sync');
+let minify = require('html-minifier').minify;
 
 let redoc_version = require('../package').dependencies.redoc;
 
@@ -40,6 +41,25 @@ const uploadFileName = 'index.html';
             buildCommit: `${git.short()} (${git.message()})`,
             buildCommitUrl: `https://github.com/FirePillow/kcibald-docs/commit/${git.long()}`
         });
+
+        result = minify(
+            result,
+            {
+                log: console.log,
+                collapseBooleanAttributes: true,
+                collapseInlineTagWhitespace: true,
+                collapseWhitespace: true,
+                conservativeCollapse: true,
+                keepClosingSlash: true,
+                minifyCSS: true,
+                minifyJS: true,
+                removeComments: true,
+                removeEmptyAttributes: true,
+                removeEmptyElements: false,
+                removeScriptTypeAttributes: true,
+                useShortDoctype: true
+            }
+        );
 
         if (!fs.existsSync('output')) {
             fs.mkdirSync('output');
