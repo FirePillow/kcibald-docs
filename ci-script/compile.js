@@ -3,6 +3,7 @@ let readFileSync = require("fs").readFileSync;
 
 let loadAndBundleSpec = require("redoc").loadAndBundleSpec;
 let fs = require("fs");
+let pathUtil = require('path');
 let createStore = require('redoc').createStore;
 let ServerStyleSheet = require('styled-components').ServerStyleSheet;
 let renderToString = require('react-dom/server').renderToString;
@@ -11,16 +12,52 @@ let Redoc = require('redoc').Redoc;
 let compile = require('handlebars').compile;
 let git = require('git-rev-sync');
 let minify = require('html-minifier').minify;
+let JSON5 = require('json5');
+
+let util = require('./utils');
 
 let redoc_version = require('../package').dependencies.redoc;
 
-const configFilePath = 'api.json';
+const tempFolder = "./tmp/";
+
+const configFolder = "./src/";
+const masterConfigFile = 'index.json';
 const uploadFileName = 'index.html';
 
 (async function () {
     try {
-        let spec = await loadAndBundleSpec(configFilePath);
-        const store = await createStore(spec, configFilePath, {hideDownloadButton: true});
+
+        // convert json5 files to json
+        let processDirectory = (folder, file) => {
+            let path = pathUtil.join(folder, file);
+            let outputPath = pathUtil.join(tempFolder, path);
+
+            if (util.isDirectory(path)) {
+                fs.mkdirSync(outputPath);
+                util.forEachInDirectory(path, file => processDirectory(path, file));
+            } else {
+                let specTree;
+                if (file.includes(".json5")) {
+                    specTree = JSON5.parse(fs.readFileSync(path).toString());
+                } else {
+                    specTree = JSON.parse(fs.readFileSync(path).toString());
+                }
+                fs.writeFileSync(outputPath, JSON.stringify(specTree));
+            }
+        };
+
+        // prepare temporary folder for conversion
+        util.createCleanFolder(tempFolder);
+        fs.mkdirSync(pathUtil.join(tempFolder, configFolder));
+
+        // convert
+        util.forEachInDirectory(configFolder, file => processDirectory(configFolder, file));
+
+        let convertedMasterConfigLocation = pathUtil.join(tempFolder, configFolder, masterConfigFile);
+
+        // compile
+        let spec = await loadAndBundleSpec(convertedMasterConfigLocation);
+        const store = await createStore(spec, convertedMasterConfigLocation, {hideDownloadButton: true});
         const sheet = new ServerStyleSheet();
         let element = React.createElement(Redoc, {store});
         let html = renderToString(sheet.collectStyles(element));
@@ -65,10 +102,9 @@ const uploadFileName = 'index.html';
             fs.mkdirSync('output');
         }
         fs.writeFileSync('output/' + uploadFileName, result);
-        fs.copyFileSync(configFilePath, 'output/' + configFilePath)
+
     } catch (e) {
         console.log(e);
         process.exit(-1)
     }
 })();
-
