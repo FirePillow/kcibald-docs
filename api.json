@@ -139,14 +139,7 @@
                       "$ref": "#/components/schemas/recaptcha_failure"
                     },
                     {
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "PASSWORD_OR_USER_NAME_INCORRECT"
-                          ]
-                        }
-                      }
+                      "$ref": "#/components/schemas/incorrect_password"
                     }
                   ]
                 }
@@ -1524,6 +1517,22 @@
             "enum": [
               "ATTACHMENT_INVALID_ID",
               "ATTACHMENT_FILE_NOT_UPLOADED"
+            ]
+          }
+        }
+      },
+      "incorrect_password": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PASSWORD_OR_USERNAME_INCORRECT"
             ]
           }
         }
