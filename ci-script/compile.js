@@ -2,7 +2,6 @@ let join = require("path").join;
 let readFileSync = require("fs").readFileSync;
 
 let loadAndBundleSpec = require("redoc").loadAndBundleSpec;
-let dirname = require("path").dirname;
 let fs = require("fs");
 let createStore = require('redoc').createStore;
 let ServerStyleSheet = require('styled-components').ServerStyleSheet;
@@ -24,11 +23,12 @@ const uploadFileName = 'index.html';
         const store = await createStore(spec, configFilePath, {hideDownloadButton: true});
         const sheet = new ServerStyleSheet();
         let element = React.createElement(Redoc, {store});
-        html = renderToString(sheet.collectStyles(element));
-        css = sheet.getStyleTags();
-        state = await store.toJS();
+        let html = renderToString(sheet.collectStyles(element));
+        let css = sheet.getStyleTags();
+        let state = await store.toJS();
         let templateFileName = join(__dirname, './template.hbs');
         let template = compile(readFileSync(templateFileName).toString());
+        // noinspection JSUnresolvedLibraryURL
         let result = template({
             redocHTML: `<div id="redoc">${html}</div>`,
             redoc_state: JSON.stringify(state),
