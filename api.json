@@ -892,7 +892,7 @@
         }
       }
     },
-    "/me/settings": {
+    "/me/settings/": {
       "get": {
         "summary": "get user setting",
         "description": "list user's email address, avatar and signature setting",
@@ -961,7 +961,7 @@
         }
       }
     },
-    "/me/profile/credentials": {
+    "/me/settings/credentials": {
       "post": {
         "summary": "modify user credentials",
         "description": "change user's password",
@@ -1026,7 +1026,7 @@
         }
       }
     },
-    "/me/profile/email": {
+    "/me/settings/email": {
       "post": {
         "summary": "update user email",
         "tags": [
@@ -1070,7 +1070,7 @@
         }
       }
     },
-    "/me/profile/email/{emailType}/resend": {
+    "/me/settings/email/{emailType}/resend": {
       "post": {
         "summary": "resend verification email to the email address",
         "tags": [
@@ -1116,7 +1116,7 @@
         }
       }
     },
-    "/me/profile/avatar": {
+    "/me/settings/avatar": {
       "post": {
         "summary": "update user avatar",
         "tags": [
