@@ -1023,11 +1023,31 @@
         },
         "parameters": [],
         "responses": {
+          "204": {
+            "description": "Request success"
+          },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "description": "Incorrect credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/recaptcha_failure"
+                    },
+                    {
+                      "$ref": "#/components/schemas/incorrect_password"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
             "$ref": "#/components/responses/server_failure"
