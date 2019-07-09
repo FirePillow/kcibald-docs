@@ -126,14 +126,7 @@
                       "$ref": "#/components/schemas/recaptcha_failure"
                     },
                     {
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "PASSWORD_OR_USER_NAME_INCORRECT"
-                          ]
-                        }
-                      }
+                      "$ref": "#/components/schemas/incorrect_password"
                     }
                   ]
                 }
@@ -975,13 +968,57 @@
         "tags": [
           "config"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "original_password": {
+                    "type": "string",
+                    "description": "user's original password",
+                    "required": true
+                  },
+                  "new_password": {
+                    "type": "string",
+                    "description": "password that user is going to change to"
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "google recaptcha token"
+                  }
+                }
+              }
+            }
+          }
+        },
         "parameters": [],
         "responses": {
+          "204": {
+            "description": "Request success"
+          },
           "400": {
             "$ref": "#/components/responses/bad_request"
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "description": "Incorrect credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/recaptcha_failure"
+                    },
+                    {
+                      "$ref": "#/components/schemas/incorrect_password"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "500": {
             "$ref": "#/components/responses/server_failure"
@@ -1467,6 +1504,22 @@
             "enum": [
               "ATTACHMENT_INVALID_ID",
               "ATTACHMENT_FILE_NOT_UPLOADED"
+            ]
+          }
+        }
+      },
+      "incorrect_password": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PASSWORD_OR_USERNAME_INCORRECT"
             ]
           }
         }
