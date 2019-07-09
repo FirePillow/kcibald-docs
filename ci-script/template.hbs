@@ -14,10 +14,29 @@
             padding: 0;
             margin: 0;
         }
+
+        footer {
+            background-color: rgb(249, 213, 64);
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding-top: 40px;
+            padding-bottom: 60px;
+        }
+
+        .maintain {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        .build-info {
+            font-family: 'Oswald', sans-serif;
+        }
     </style>
     <script>document.location.protocol.includes('https') || (document.location.protocol = 'https')</script>
     {{{redoc_styles}}}
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Noto+Sans+JP|Oswald|Roboto&display=swap"
+          rel="stylesheet">
 </head>
 
 <body>
@@ -28,6 +47,18 @@
     var container = document.getElementById('redoc');
     Redoc.hydrate(__redoc_state, container);
 </script>
-</body>
 
+<footer>
+    <img src="https://cdn.jsdelivr.net/gh/ProjectFK/KCIbald@0.0.3/dist/assets/favicon.ico" alt="KCIbald icon">
+    <p class="maintain">Created and maintained by <a href="https://github.com/FirePillow/">FirePillow</a> with &#128151</p>
+    <p class="build-info">
+        <i>
+            This page was built on {{ buildTime }},
+            from branch: <b>{{ buildBranchName }}</b>,
+            commit <b><a href={{buildCommitUrl}}>{{ buildCommit }}</a></b>
+        </i>
+    </p>
+</footer>
+
+</body>
 </html>

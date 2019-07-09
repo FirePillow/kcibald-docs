@@ -10,11 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "ali-oss": "^6.1.0",
+    "git-rev-sync": "^1.12.0",
     "redoc": "^2.0.0-rc.4"
   },
   "devDependencies": {
     "builtin-status-codes": "^3.0.0",
     "chokidar": "^3.0.0",
+    "html-minifier": "^4.0.0",
     "mobx": "^5.9.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
