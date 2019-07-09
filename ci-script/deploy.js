@@ -1,4 +1,5 @@
 let oss = require('ali-oss');
+const uploadFileName = 'index.html';
 
 (async function () {
     try {
@@ -20,16 +21,10 @@ let oss = require('ali-oss');
             process.exit(-1)
         }
 
-        const configFilePath = 'api.json';
-        const uploadFileName = 'index.html';
-
         console.log(`uploading using access key ${ossAccessKeyId}`);
-        let promiseHTML = ossStore.put(uploadFileName, `output/${uploadFileName}`);
-        let promiseConfig = ossStore.put(configFilePath, `output/${configFilePath}`);
-        await Promise.all([promiseHTML, promiseConfig])
+        await ossStore.put(uploadFileName, `output/${uploadFileName}`);
     } catch (e) {
         console.warn(`upload failed!, ${e}`);
         process.exit(-1)
     }
-
 }());

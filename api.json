@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "Kcibald API",
+    "description": "Kcibald API, <br> for more information, please visit <a href=\"https://github.com/FirePillow/kcibald-docs\">the github page</a>",
     "version": "0.0.1",
     "title": "Kcibald API",
     "contact": {
