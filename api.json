@@ -778,6 +778,26 @@
           "user"
         ],
         "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_info": {
+                      "$ref": "#/components/schemas/user"
+                    },
+                    "all_feeds": {
+                      "type": "array",
+                      "items": {
+                        "description": "feed objects"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
