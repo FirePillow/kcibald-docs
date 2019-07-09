@@ -10,27 +10,15 @@
   },
   "servers": [
     {
-      "url": "https://www.kcibald.com",
-      "description": "production server end point, Content-Type header should be application/json"
+      "url": "https://api.kcibald.com/v1/",
+      "description": "production server end Point"
     },
     {
-      "url": "https://api.kcibald.com",
-      "description": "production server end Point, only accept Content-Type application/json"
-    },
-    {
-      "url": "https://api-testing.develop.kcibald.com",
-      "description": "testing / staging server end point"
+      "url": "https://api-testing.develop.kcibald.com/v1/",
+      "description": "testing / staging server end point, using test / static data"
     }
   ],
   "tags": [
-    {
-      "name": "stable",
-      "description": "The api is stable and will likely not change"
-    },
-    {
-      "name": "developing",
-      "description": "The api is unstable and may change"
-    },
     {
       "name": "general",
       "description": "General request / query"
@@ -80,8 +68,7 @@
         "summary": "login",
         "parameters": [],
         "tags": [
-          "general",
-          "developing"
+          "general"
         ],
         "requestBody": {
           "content": {
@@ -194,8 +181,7 @@
     "/feed": {
       "get": {
         "tags": [
-          "general",
-          "developing"
+          "general"
         ],
         "summary": "fetch feed",
         "description": "fetch new activities from all subscribed regions",
@@ -268,8 +254,7 @@
       "put": {
         "summary": "request an upload",
         "tags": [
-          "general",
-          "developing"
+          "general"
         ],
         "parameters": [
         ],
@@ -285,8 +270,7 @@
       ],
       "get": {
         "tags": [
-          "regional",
-          "developing"
+          "regional"
         ],
         "summary": "list regional information",
         "operationId": "",
@@ -390,7 +374,6 @@
       ],
       "post": {
         "tags": [
-          "developing",
           "post"
         ],
         "summary": "subscribe to a region",
@@ -424,8 +407,7 @@
         "description": "Example url: /r/ib-office/posts",
         "summary": "list posts under region",
         "tags": [
-          "post",
-          "developing"
+          "post"
         ],
         "parameters": [
           {
@@ -487,8 +469,7 @@
       "put": {
         "summary": "create post",
         "tags": [
-          "post",
-          "developing"
+          "post"
         ],
         "operationId": "",
         "parameters": [],
@@ -609,7 +590,6 @@
       "get": {
         "summary": "get post",
         "tags": [
-          "developing",
           "post"
         ],
         "parameters": [],
@@ -650,7 +630,6 @@
       },
       "delete": {
         "tags": [
-          "developing",
           "post"
         ],
         "summary": "delete post",
@@ -713,7 +692,6 @@
       "get": {
         "summary": "get comments under post",
         "tags": [
-          "developing",
           "comment"
         ],
         "parameters": [
@@ -778,7 +756,6 @@
       "post": {
         "summary": "create an comment",
         "tags": [
-          "developing",
           "comment"
         ],
         "parameters": [],
@@ -805,7 +782,6 @@
       "get": {
         "summary": "get user information",
         "tags": [
-          "developing",
           "user"
         ],
         "responses": {
@@ -822,8 +798,7 @@
         "summary": "get user feed",
         "tags": [
           "post",
-          "user",
-          "develop"
+          "user"
         ],
         "parameters": [],
         "responses": {
@@ -834,8 +809,7 @@
       "get": {
         "summary": "get my profile",
         "tags": [
-          "user",
-          "develop"
+          "user"
         ],
         "parameters": [],
         "responses": {
@@ -888,7 +862,6 @@
       "get": {
         "summary": "get my subscriptions",
         "tags": [
-          "develop",
           "user"
         ],
         "parameters": [],
@@ -931,7 +904,6 @@
         "summary": "get user setting",
         "description": "list user's email address, avatar and signature setting",
         "tags": [
-          "developing",
           "config"
         ],
         "parameters": [],
@@ -1001,7 +973,6 @@
         "summary": "modify user credentials",
         "description": "change user's password",
         "tags": [
-          "developing",
           "config"
         ],
         "parameters": [],
@@ -1022,7 +993,6 @@
       "post": {
         "summary": "update user email",
         "tags": [
-          "developing",
           "config"
         ],
         "parameters": [],
@@ -1067,7 +1037,6 @@
       "post": {
         "summary": "resend verification email to the email address",
         "tags": [
-          "developing",
           "config"
         ],
         "parameters": [
@@ -1114,14 +1083,12 @@
       "post": {
         "summary": "update user avatar",
         "tags": [
-          "develop",
           "config"
         ],
         "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
-
             }
           }
         },
