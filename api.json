@@ -201,24 +201,11 @@
                     },
                     "data": {
                       "properties": {
-                        "posts": {
+                        "feeds": {
                           "type": "array",
+                          "description": "feed objects",
                           "items": {
-                            "type": "object",
-                            "allOf": [
-                              {
-                                "$ref": "#/components/schemas/post_head"
-                              },
-                              {
-                                "properties": {
-                                  "region": {
-                                    "type": "string",
-                                    "example": "ib-office",
-                                    "description": "region of the post"
-                                  }
-                                }
-                              }
-                            ]
+                            "$ref": "#/components/schemas/feed"
                           }
                         },
                         "mark": {
