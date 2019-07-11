@@ -792,7 +792,6 @@
       "get": {
         "summary": "get user feed",
         "tags": [
-          "post",
           "user"
         ],
         "parameters": [
