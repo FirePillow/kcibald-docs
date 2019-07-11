@@ -783,17 +783,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "user_info": {
-                      "$ref": "#/components/schemas/user"
-                    },
-                    "all_feeds": {
-                      "type": "array",
-                      "items": {
-                        "description": "feed objects"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/user"
                 }
               }
             }
