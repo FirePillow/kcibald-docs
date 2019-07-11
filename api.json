@@ -789,19 +789,68 @@
       }
     },
     "/u/{userId}/feed/": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/userId"
-        }
-      ],
       "get": {
         "summary": "get user feed",
         "tags": [
           "post",
           "user"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/userId"
+          },
+          {
+            "$ref": "#/components/parameters/query_mark"
+          },
+          {
+            "$ref": "#/components/parameters/amount"
+          }
+        ],
         "responses": {
+          "200": {
+            "description": "Fetch success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [true]
+                    },
+                    "data": {
+                      "properties": {
+                        "feed": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/feed"
+                          }
+                        },
+                        "query_mark": {
+                          "$ref": "#/components/schemas/query_mark"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
         }
       }
     },
