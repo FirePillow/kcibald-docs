@@ -1394,6 +1394,32 @@
           }
         }
       },
+      "feed": {
+        "type": "object",
+        "description": "represents an event of user operation",
+        "anyOf": [
+          {
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "type of event, in this case, a new post in subscribed region",
+                "enum": [
+                  "REGION_SUBSCRIPTION:NEW_POST"
+                ]
+              },
+              "detail": {
+                "$ref": "#/components/schemas/post_head"
+              },
+              "source": {
+                "$ref": "#/components/schemas/region"
+              },
+              "time": {
+                "$ref": "#/components/schemas/create_timestamp"
+              }
+            }
+          }
+        ]
+      },
       "create_timestamp": {
         "type": "integer",
         "format": "int64",
