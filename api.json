@@ -766,11 +766,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Success response",
+            "description": "Fetch success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/user"
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
                 }
               }
             }
@@ -816,29 +826,7 @@
                       ]
                     },
                     "data": {
-                      "allOf": [
-                        {
-                          "$ref": "#/components/schemas/user"
-                        },
-                        {
-                          "properties": {
-                            "feed": {
-                              "properties": {
-                                "posts": {
-                                  "type": "array",
-                                  "maxItems": 20,
-                                  "items": {
-                                    "$ref": "#/components/schemas/post_head"
-                                  }
-                                },
-                                "mark": {
-                                  "$ref": "#/components/schemas/query_mark"
-                                }
-                              }
-                            }
-                          }
-                        }
-                      ]
+                      "$ref": "#/components/schemas/user"
                     }
                   }
                 }
