@@ -660,7 +660,7 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/comments": {
+    "/r/{regionId}/p/{postId}/comments/": {
       "parameters": [
         {
           "$ref": "#/components/parameters/regionId"
@@ -744,12 +744,68 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "content of content",
+                    "required": true
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/attachment"
+                    },
+                    "required": false
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "Google Recaptcha token",
+                    "required": true
+                  }
                 }
               }
             }
           }
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": {
+                "description": "Link of the comment",
+                "example": "/r/super-region/p/how-to-get-45/comments/1"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "description": "Reserved"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          }
         }
       }
     },
@@ -815,7 +871,9 @@
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [true]
+                      "enum": [
+                        true
+                      ]
                     },
                     "data": {
                       "properties": {
