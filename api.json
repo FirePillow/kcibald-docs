@@ -774,6 +774,24 @@
                 "description": "Link of the comment",
                 "example": "/r/super-region/p/how-to-get-45/comments/1"
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/comment"
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -853,7 +871,9 @@
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [true]
+                      "enum": [
+                        true
+                      ]
                     },
                     "data": {
                       "properties": {
