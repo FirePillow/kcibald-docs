@@ -744,6 +744,20 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "content of content"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/attachment"
+                    }
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "Google Recaptcha token"
+                  }
                 }
               }
             }
