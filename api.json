@@ -660,7 +660,7 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/comments": {
+    "/r/{regionId}/p/{postId}/comments/": {
       "parameters": [
         {
           "$ref": "#/components/parameters/regionId"
@@ -746,17 +746,20 @@
                 "properties": {
                   "content": {
                     "type": "string",
-                    "description": "content of content"
+                    "description": "content of content",
+                    "required": true
                   },
                   "attachments": {
                     "type": "array",
                     "items": {
                       "$ref": "#/components/schemas/attachment"
-                    }
+                    },
+                    "required": false
                   },
                   "captcha": {
                     "type": "string",
-                    "description": "Google Recaptcha token"
+                    "description": "Google Recaptcha token",
+                    "required": true
                   }
                 }
               }
@@ -764,6 +767,27 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": {
+                "description": "Link of the comment",
+                "example": "/r/super-region/p/how-to-get-45/comments/1"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "description": "Reserved"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          }
         }
       }
     },
