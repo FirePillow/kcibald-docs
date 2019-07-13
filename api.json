@@ -1290,11 +1290,14 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "chat room"
+            "example": "chat room",
+            "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
           },
           "url_key": {
             "type": "string",
-            "example": "DP/chat-room"
+            "example": "DP/chat-room",
+            "pattern": "^[\\w\\-_\\/]+$",
+            "description": "url key of the region, format as \"%parent-region-url-key%/%this-region-specific-url-key\", unique across the whole site"
           },
           "parent": {
             "description": "parent region",
@@ -1302,10 +1305,13 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "DP"
+                "example": "DP",
+                "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
               },
               "url_key": {
+                "pattern": "^[\\w\\-_]+$",
                 "type": "string",
+                "description": "url key of the parent region",
                 "example": "DP"
               },
               "parent": {
@@ -1339,11 +1345,14 @@
         "properties": {
           "title": {
             "type": "string",
-            "example": "why not to choice physics HL"
+            "example": "why not to choice physics HL",
+            "description": "user display title of the post"
           },
           "url_key": {
             "type": "string",
-            "example": "why_not_to_choice_physics_HL"
+            "pattern": "^[\\w\\-_]+$",
+            "example": "why_not_to_choice_physics_HL",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across region"
           },
           "region_url_key": {
             "type": "string",
@@ -1410,7 +1419,9 @@
           },
           "url_key": {
             "type": "string",
-            "example": "james_ye"
+            "example": "james_ye",
+            "pattern": "^[\\w\\-_]+$",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across the whole site"
           },
           "signature": {
             "type": "string",
