@@ -296,9 +296,13 @@
                             },
                             "upload_config": {
                               "properties": {
-                                "bucket_host": {
+                                "bucket": {
                                   "type": "string",
-                                  "example": "kcibald-test-1234567890.cos.ap-hongkong.myqcloud.com"
+                                  "example": "kcibald-test"
+                                },
+                                "region": {
+                                  "type": "string",
+                                  "example": "ap-hongkong"
                                 },
                                 "object_name": {
                                   "type": "string",
@@ -343,7 +347,6 @@
                         }
                       }
                     }
-
                   ]
                 }
               }
