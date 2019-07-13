@@ -1313,10 +1313,6 @@
                   null
                 ]
               },
-              "regionId": {
-                "type": "string",
-                "example": "dkjkaljfd"
-              },
               "description": {
                 "type": "string",
                 "example": "DP region"
@@ -1326,10 +1322,6 @@
                 "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
               }
             }
-          },
-          "regionId": {
-            "type": "string",
-            "example": "dkjkaljfd"
           },
           "description": {
             "type": "string",
@@ -1349,17 +1341,13 @@
             "type": "string",
             "example": "why not to choice physics HL"
           },
-          "postId": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
-          },
           "url_key": {
             "type": "string",
             "example": "why_not_to_choice_physics_HL"
           },
-          "regionId": {
+          "region_url_key": {
             "type": "string",
-            "example": "dkjkaljfd"
+            "example": "DP"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -1416,10 +1404,6 @@
       "user": {
         "type": "object",
         "properties": {
-          "user_id": {
-            "type": "string",
-            "example": "r8hpppZ6mK"
-          },
           "user_name": {
             "type": "string",
             "example": "james ye"
@@ -1444,7 +1428,8 @@
         "type": "object",
         "properties": {
           "comment_id": {
-            "type": "string"
+            "type": "integer",
+            "description": "incremental integer unique in a post (#1, #2, #3...)"
           },
           "author": {
             "$ref": "#/components/schemas/user"
