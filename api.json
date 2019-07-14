@@ -233,7 +233,7 @@
     "/upload": {
       "post": {
         "summary": "request an upload",
-        "description": "this endpoint instructs how client is able to upload an attachment or embedded image etc to the site, upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the object_reference_token is not related to any creation for a given time, it will be expired and user have to upload the file again",
+        "description": "This endpoint instructs how client is able to upload an attachment or embedded image to the site. <br>Upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the object_reference_token is not related to any creation for a given time, the token will be <b>expired</b> and user have to upload the file again.",
         "tags": [
           "general"
         ],
@@ -1706,7 +1706,7 @@
               },
               "reference_token_expire_time": {
                 "type": "integer",
-                "description": "expire time for the reference token, formatted in seconds from epoch",
+                "description": "expire time for the reference token, formatted in seconds from epoch, generally it is one day",
                 "example": "1563102266"              }
             }
           }
