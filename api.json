@@ -230,7 +230,7 @@
         }
       }
     },
-    "/_/upload": {
+    "/upload": {
       "post": {
         "summary": "request an upload",
         "tags": [
