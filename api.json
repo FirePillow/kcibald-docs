@@ -1510,11 +1510,14 @@
       },
       "upload_attachments": {
         "type": "array",
+        "description": "This array contains attachments either embedded in the content or as an standalone attachment",
         "items": {
           "properties": {
             "title": {
               "type": "string",
-              "example": "goodjob.jpg"
+              "example": "goodjob.jpg",
+              "description": "title for the standalone attachments, it can be null for embedded images",
+              "nullable": true
             },
             "upload_token": {
               "type": "string",
