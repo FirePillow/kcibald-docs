@@ -2,7 +2,6 @@ let join = require("path").join;
 let readFileSync = require("fs").readFileSync;
 
 let loadAndBundleSpec = require("redoc").loadAndBundleSpec;
-let dirname = require("path").dirname;
 let fs = require("fs");
 let createStore = require('redoc').createStore;
 let ServerStyleSheet = require('styled-components').ServerStyleSheet;
@@ -29,6 +28,7 @@ const uploadFileName = 'index.html';
         state = await store.toJS();
         let templateFileName = join(__dirname, './template.hbs');
         let template = compile(readFileSync(templateFileName).toString());
+        // noinspection JSUnresolvedLibraryURL
         let result = template({
             redocHTML: `<div id="redoc">${html}</div>`,
             redoc_state: JSON.stringify(state),
@@ -38,7 +38,7 @@ const uploadFileName = 'index.html';
             title: `${spec.info.title} documtation`,
             buildTime: new Date(),
             buildBranchName: git.branch(),
-            buildCommit: `${git.short()} (${git.message()})`,
+            buildCommit: `${git.short()} (${git.message().split("\n")[0]})`,
             buildCommitUrl: `https://github.com/FirePillow/kcibald-docs/commit/${git.long()}`
         });
 
