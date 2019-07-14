@@ -251,101 +251,17 @@
         ],
         "responses": {
           "202": {
-            "description": "General Response",
+            "description": "Accepted",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "anyOf": [
                     {
-                      "description": "A success response",
-                      "properties": {
-                        "success": {
-                          "type": "boolean",
-                          "enum": [
-                            true
-                          ]
-                        },
-                        "data": {
-                          "type": "object",
-                          "description": "For Tencent based storage (using COS)",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "enum": [
-                                "COS"
-                              ]
-                            },
-                            "credentials": {
-                              "type": "object",
-                              "description": "credentials for accessing the service",
-                              "properties": {
-                                "security_token": {
-                                  "type": "string",
-                                  "example": "5e776c4216ff4d31a7c74fe194a978a3ff2a42864"
-                                },
-                                "secret_id": {
-                                  "type": "string",
-                                  "example": "AKIDcAZnqgar9ByWq6m7ucIn8LNEuY2MkPCl"
-                                },
-                                "secret_key": {
-                                  "type": "string",
-                                  "example": "VpxrX0IMCpHXWL0Wr3KQNCqJix1uhMqD"
-                                }
-                              }
-                            },
-                            "upload_config": {
-                              "properties": {
-                                "bucket": {
-                                  "type": "string",
-                                  "example": "kcibald-test"
-                                },
-                                "region": {
-                                  "type": "string",
-                                  "example": "ap-hongkong"
-                                },
-                                "object_name": {
-                                  "type": "string",
-                                  "example": "avatars/ZblLmIvw0e.jpeg"
-                                },
-                                "storage_class": {
-                                  "enum": [
-                                    "STANDARD",
-                                    "STANDARD_IA"
-                                  ]
-                                },
-                                "meta_data_headers": {
-                                  "type": "object",
-                                  "default": {},
-                                  "example": {
-                                    "x-cos-meta-object-relation": "eyJ1cGxvYWRfdXNlciI6ImthZHVmMyJ9"
-                                  }
-                                }
-                              }
-                            },
-                            "object_reference_token": {
-                              "type": "string",
-                              "description": "token use to reference uploaded object",
-                              "example": "ZblLmIvw0e"
-                            }
-                          }
-                        }
-                      }
+                      "$ref": "#/components/schemas/satisfiable_upload_response"
                     },
                     {
-                      "description": "A failure response",
-                      "properties": {
-                        "success": {
-                          "enum": [
-                            false
-                          ]
-                        },
-                        "message": {
-                          "required": false,
-                          "description": "helpful message that maybe useful for the consumers",
-                          "example": "we run out of money, sorry no upload :("
-                        }
-                      }
+                      "$ref": "#/components/schemas/unsatisfiable_upload_response"
                     }
                   ]
                 }
@@ -1760,6 +1676,107 @@
             "enum": [
               "PASSWORD_OR_USERNAME_INCORRECT"
             ]
+          }
+        }
+      },
+      "satisfiable_upload_response": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "upload_spec": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/tencent_based_storage_upload_spec"
+                  }
+                ]
+              },
+              "object_reference_token": {
+                "type": "string",
+                "description": "token use to reference uploaded object",
+                "example": "ZblLmIvw0e"
+              }
+            }
+          }
+        }
+      },
+      "tencent_based_storage_upload_spec": {
+        "type": "object",
+        "description": "For Tencent based storage (using COS)",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "COS"
+            ]
+          },
+          "credentials": {
+            "type": "object",
+            "description": "credentials for accessing the service",
+            "properties": {
+              "security_token": {
+                "type": "string",
+                "example": "5e776c4216ff4d31a7c74fe194a978a3ff2a42864"
+              },
+              "secret_id": {
+                "type": "string",
+                "example": "AKIDcAZnqgar9ByWq6m7ucIn8LNEuY2MkPCl"
+              },
+              "secret_key": {
+                "type": "string",
+                "example": "VpxrX0IMCpHXWL0Wr3KQNCqJix1uhMqD"
+              }
+            }
+          },
+          "upload_config": {
+            "properties": {
+              "bucket": {
+                "type": "string",
+                "example": "kcibald-test"
+              },
+              "region": {
+                "type": "string",
+                "example": "ap-hongkong"
+              },
+              "object_name": {
+                "type": "string",
+                "example": "avatars/ZblLmIvw0e.jpeg"
+              },
+              "storage_class": {
+                "enum": [
+                  "STANDARD",
+                  "STANDARD_IA"
+                ]
+              },
+              "meta_data_headers": {
+                "type": "object",
+                "default": {},
+                "example": {
+                  "x-cos-meta-object-relation": "eyJ1cGxvYWRfdXNlciI6ImthZHVmMyJ9"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unsatisfiable_upload_response": {
+        "properties": {
+          "success": {
+            "enum": [
+              false
+            ]
+          },
+          "message": {
+            "required": false,
+            "description": "helpful message that maybe useful for the consumers",
+            "example": "we run out of money, sorry no upload :("
           }
         }
       }
