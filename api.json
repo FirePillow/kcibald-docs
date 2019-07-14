@@ -233,6 +233,7 @@
     "/upload": {
       "post": {
         "summary": "request an upload",
+        "description": "this endpoint instructs how client is able to upload an attachment or embedded image etc to the site, upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the object_reference_token is not related to any creation for a given time, it will be expired and user have to upload the file again",
         "tags": [
           "general"
         ],
