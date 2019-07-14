@@ -233,7 +233,7 @@
     "/upload": {
       "post": {
         "summary": "request an upload",
-        "description": "This endpoint instructs how client is able to upload an attachment or embedded image to the site. <br>Upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the object_reference_token is not related to any creation for a given time, the token will be <b>expired</b> and user have to upload the file again.",
+        "description": "This endpoint instructs how client is able to upload an attachment or embedded image to the site. <br>Upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the <i>object_reference_token</i> is not related to any creation for a given time, the token <b>will be expired</b> and user have to upload the file again.",
         "tags": [
           "general"
         ],
@@ -507,17 +507,7 @@
                     "example": "it's impossible"
                   },
                   "attachments": {
-                    "type": "array",
-                    "items": {
-                      "properties": {
-                        "upload_token": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "$ref": "#/components/schemas/upload_attachments"
                   },
                   "captcha": {
                     "type": "string",
@@ -785,20 +775,14 @@
                 "properties": {
                   "content": {
                     "type": "string",
-                    "description": "content of content",
-                    "required": true
+                    "example": "impressive!"
                   },
                   "attachments": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/attachment"
-                    },
-                    "required": false
+                    "$ref": "#/components/schemas/upload_attachments"
                   },
                   "captcha": {
                     "type": "string",
-                    "description": "Google Recaptcha token",
-                    "required": true
+                    "description": "Google Recaptcha token"
                   }
                 }
               }
@@ -1524,6 +1508,22 @@
           }
         }
       },
+      "upload_attachments": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "title": {
+              "type": "string",
+              "example": "goodjob.jpg"
+            },
+            "upload_token": {
+              "type": "string",
+              "description": "The token received when client requested an upload, see: <a href=\"#tag/general/paths/~1upload/post\">/upload</a> endpoint",
+              "example": "ZblLmIvw0e"
+            }
+          }
+        }
+      },
       "feed": {
         "type": "object",
         "description": "represents an event of user operation",
@@ -1707,7 +1707,8 @@
               "reference_token_expire_time": {
                 "type": "integer",
                 "description": "expire time for the reference token, formatted in seconds from epoch, generally it is one day",
-                "example": "1563102266"              }
+                "example": "1563102266"
+              }
             }
           }
         }
