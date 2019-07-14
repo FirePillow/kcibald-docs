@@ -1698,11 +1698,15 @@
                   }
                 ]
               },
-              "object_reference_token": {
+              "reference_token": {
                 "type": "string",
                 "description": "token use to reference uploaded object",
                 "example": "ZblLmIvw0e"
-              }
+              },
+              "reference_token_expire_time": {
+                "type": "integer",
+                "description": "expire time for the reference token, formatted in seconds from epoch",
+                "example": "1563102266"              }
             }
           }
         }
