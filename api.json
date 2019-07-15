@@ -546,7 +546,7 @@
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Bad request | Post creation requirements not meet",
             "content": {
               "application/json": {
                 "schema": {
@@ -818,7 +818,7 @@
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Bad request | Comment creation requirement not meet",
             "content": {
               "application/json": {
                 "schema": {
@@ -1656,7 +1656,6 @@
         }
       },
       "invalid_attachment_failure": {
-        "description": "attachment token invalid",
         "type": "object",
         "properties": {
           "success": {
@@ -1667,6 +1666,7 @@
           },
           "type": {
             "type": "string",
+            "description": "<ul><li><b>ATTACHMENT_INVALID_ID</b>: the request token attached is invalid or expired</li><li><b>ATTACHMENT_TYPE_MISMATCH</b>: attachment type of \"embedded\" is not found in the uploaded content, or an attachment marked as avatar is included, etc...</li><li><b>ATTACHMENT_FILE_NOT_UPLOADED</b>: the attachment token do not have file associate with it</li></ul>",
             "enum": [
               "ATTACHMENT_INVALID_ID",
               "ATTACHMENT_TYPE_MISMATCH",
