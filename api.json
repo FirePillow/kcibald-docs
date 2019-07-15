@@ -242,10 +242,10 @@
         }
       }
     },
-    "/r/{regionId}/": {
+    "/r/{regionKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "get": {
@@ -300,7 +300,6 @@
                             "name": "DP",
                             "url_key": "DP",
                             "parent": null,
-                            "regionId": "dkjkaljfd",
                             "description": "region for talking things about DP",
                             "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
                             "top_posts": [],
@@ -313,11 +312,9 @@
                                   "name": "DP",
                                   "url_key": "DP",
                                   "parent": null,
-                                  "regionId": "dkjkaljfd",
                                   "description": "region for talking things about DP",
                                   "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                                 },
-                                "regionId": "dkjkaljfd",
                                 "description": "region for talking about things about DP",
                                 "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                               }
@@ -346,10 +343,10 @@
         }
       }
     },
-    "/r/{regionId}/subscribe": {
+    "/r/{regionKey}/subscribe": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "post": {
@@ -377,10 +374,10 @@
         }
       }
     },
-    "/r/{regionId}/p/": {
+    "/r/{regionKey}/p/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "get": {
@@ -558,13 +555,13 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/": {
+    "/r/{regionKey}/p/{postKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         },
         {
-          "$ref": "#/components/parameters/postId"
+          "$ref": "#/components/parameters/postKey"
         }
       ],
       "get": {
@@ -660,13 +657,13 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/comments/": {
+    "/r/{regionKey}/p/{postKey}/comments/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         },
         {
-          "$ref": "#/components/parameters/postId"
+          "$ref": "#/components/parameters/postKey"
         }
       ],
       "get": {
@@ -809,10 +806,10 @@
         }
       }
     },
-    "/u/{userId}/": {
+    "/u/{userKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/userId"
+          "$ref": "#/components/parameters/userKey"
         }
       ],
       "get": {
@@ -844,7 +841,7 @@
         }
       }
     },
-    "/u/{userId}/feed/": {
+    "/u/{userKey}/feed/": {
       "get": {
         "summary": "get user feed",
         "tags": [
@@ -852,7 +849,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/userId"
+            "$ref": "#/components/parameters/userKey"
           },
           {
             "$ref": "#/components/parameters/query_mark"
@@ -1227,32 +1224,32 @@
   },
   "components": {
     "parameters": {
-      "regionId": {
+      "regionKey": {
         "in": "path",
         "name": "region",
         "required": true,
         "allowEmptyValue": false,
         "schema": {
           "type": "string",
-          "description": "the <b>region id</b> or the <b>url key</b> of the requested region"
+          "description": "the <b>url key</b> of the requested region"
         }
       },
-      "postId": {
+      "postKey": {
         "in": "path",
-        "name": "postId",
+        "name": "postKey",
         "required": true,
         "allowEmptyValue": false,
         "schema": {
           "type": "string",
-          "description": "the <b>post id</b> or the <b>url key</b> of the requested post"
+          "description": "the <b>url key</b> of the requested post"
         }
       },
-      "userId": {
+      "userKey": {
         "in": "path",
-        "name": "userId",
+        "name": "userKey",
         "schema": {
           "type": "string",
-          "description": "the <b>user id</b> or the <b>url key</b> of the requested user"
+          "description": "the or the <b>url key</b> of the requested user"
         }
       },
       "query_mark": {
@@ -1290,11 +1287,14 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "chat room"
+            "example": "chat room",
+            "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
           },
           "url_key": {
             "type": "string",
-            "example": "DP/chat-room"
+            "example": "DP/chat-room",
+            "pattern": "^[\\w\\-_\\/]+$",
+            "description": "url key of the region, format as \"%parent-region-url-key%/%this-region-specific-url-key\", unique across the whole site"
           },
           "parent": {
             "description": "parent region",
@@ -1302,20 +1302,19 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "DP"
+                "example": "DP",
+                "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
               },
               "url_key": {
+                "pattern": "^[\\w\\-_]+$",
                 "type": "string",
+                "description": "url key of the parent region",
                 "example": "DP"
               },
               "parent": {
                 "enum": [
                   null
                 ]
-              },
-              "regionId": {
-                "type": "string",
-                "example": "dkjkaljfd"
               },
               "description": {
                 "type": "string",
@@ -1326,10 +1325,6 @@
                 "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
               }
             }
-          },
-          "regionId": {
-            "type": "string",
-            "example": "dkjkaljfd"
           },
           "description": {
             "type": "string",
@@ -1347,19 +1342,18 @@
         "properties": {
           "title": {
             "type": "string",
-            "example": "why not to choice physics HL"
-          },
-          "postId": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
+            "example": "why not to choice physics HL",
+            "description": "user display title of the post"
           },
           "url_key": {
             "type": "string",
-            "example": "why_not_to_choice_physics_HL"
+            "pattern": "^[\\w\\-_]+$",
+            "example": "why_not_to_choice_physics_HL",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across region"
           },
-          "regionId": {
+          "region_url_key": {
             "type": "string",
-            "example": "dkjkaljfd"
+            "example": "DP"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -1416,17 +1410,15 @@
       "user": {
         "type": "object",
         "properties": {
-          "user_id": {
-            "type": "string",
-            "example": "r8hpppZ6mK"
-          },
           "user_name": {
             "type": "string",
             "example": "james ye"
           },
           "url_key": {
             "type": "string",
-            "example": "james_ye"
+            "example": "james_ye",
+            "pattern": "^[\\w\\-_]+$",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across the whole site"
           },
           "signature": {
             "type": "string",
@@ -1444,7 +1436,8 @@
         "type": "object",
         "properties": {
           "comment_id": {
-            "type": "string"
+            "type": "integer",
+            "description": "incremental integer unique in a post (#1, #2, #3...)"
           },
           "author": {
             "$ref": "#/components/schemas/user"
