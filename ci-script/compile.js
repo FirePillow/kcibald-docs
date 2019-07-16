@@ -20,7 +20,7 @@ const uploadFileName = 'index.html';
 (async function () {
     try {
         let spec = await loadAndBundleSpec(configFilePath);
-        const store = await createStore(spec, configFilePath, {});
+        const store = await createStore(spec, configFilePath, {expandResponses: "200,201,202"});
         const sheet = new ServerStyleSheet();
         let element = React.createElement(Redoc, {store});
         html = renderToString(sheet.collectStyles(element));
