@@ -1267,14 +1267,26 @@
         "tags": [
           "config"
         ],
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Upload token"
           }
-        },
+        ],
         "responses": {
+          "204": {
+            "description": "Avtar update Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
         }
       }
     }
