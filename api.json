@@ -409,6 +409,9 @@
           },
           "404": {
             "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -832,6 +835,9 @@
           },
           "404": {
             "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1065,6 +1071,9 @@
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
