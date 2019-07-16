@@ -1235,19 +1235,58 @@
       }
     },
     "/me/settings/avatar": {
+      "get": {
+        "summary": "get user avatar",
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Found",
+            "headers": {
+              "Location": {
+                "description": "url of the avatar",
+                "example": "user-avatar.kcibald.com/kajslkd"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      },
       "post": {
         "summary": "update user avatar",
         "tags": [
           "config"
         ],
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-            }
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Upload token"
           }
-        },
+        ],
         "responses": {
+          "204": {
+            "description": "Avatar update Success"
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
         }
       }
     }
