@@ -836,6 +836,141 @@
         }
       }
     },
+    "/r/{regionKey}/p/{postKey}/comments/{commentId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/regionKey"
+        },
+        {
+          "$ref": "#/components/parameters/postKey"
+        },
+        {
+          "in": "path",
+          "name": "commentId",
+          "example": "1"
+        }
+      ],
+      "get": {
+        "summary": "get specific comment under post",
+        "tags": [
+          "comment"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
+        }
+      },
+      "post": {
+        "summary": "create an comment",
+        "tags": [
+          "comment"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "example": "impressive!"
+                  },
+                  "attachments": {
+                    "$ref": "#/components/schemas/upload_attachments"
+                  },
+                  "captcha": {
+                    "type": "string",
+                    "description": "Google Recaptcha token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": {
+                "description": "Link of the comment",
+                "example": "/r/super-region/p/how-to-get-45/comments/1"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/comment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request | Comment creation requirement not meet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invalid_attachment_failure"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "403": {
+            "description": "Reserved"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          }
+        }
+      }
+    },
     "/u/{userKey}/": {
       "parameters": [
         {
