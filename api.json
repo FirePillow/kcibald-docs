@@ -1276,7 +1276,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Avtar update Success"
+            "description": "Avatar update Success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
