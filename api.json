@@ -230,22 +230,61 @@
         }
       }
     },
-    "/_/upload": {
-      "put": {
+    "/upload": {
+      "post": {
         "summary": "request an upload",
+        "description": "This endpoint instructs how client is able to upload an attachment or embedded image to the site. <br>Upon any related creation request (e.g. post creation), client can refer to the file/image by the <i>object_reference_token</i>, if the <i>object_reference_token</i> is not related to any creation for a given time, the token <b>will be expired</b> and user have to upload the file again.",
         "tags": [
           "general"
         ],
         "parameters": [
+          {
+            "in": "query",
+            "name": "upload_type",
+            "schema": {
+              "enum": [
+                "ATTACHMENT",
+                "EMBEDDED_IMAGE",
+                "AVATAR"
+              ]
+            }
+          }
         ],
         "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/satisfiable_upload_response"
+                    },
+                    {
+                      "$ref": "#/components/schemas/unsatisfiable_upload_response"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/no_authorization"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
         }
       }
     },
-    "/r/{regionId}/": {
+    "/r/{regionKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "get": {
@@ -300,7 +339,6 @@
                             "name": "DP",
                             "url_key": "DP",
                             "parent": null,
-                            "regionId": "dkjkaljfd",
                             "description": "region for talking things about DP",
                             "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
                             "top_posts": [],
@@ -313,11 +351,9 @@
                                   "name": "DP",
                                   "url_key": "DP",
                                   "parent": null,
-                                  "regionId": "dkjkaljfd",
                                   "description": "region for talking things about DP",
                                   "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                                 },
-                                "regionId": "dkjkaljfd",
                                 "description": "region for talking about things about DP",
                                 "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                               }
@@ -346,10 +382,10 @@
         }
       }
     },
-    "/r/{regionId}/subscribe": {
+    "/r/{regionKey}/subscribe": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "post": {
@@ -377,10 +413,10 @@
         }
       }
     },
-    "/r/{regionId}/p/": {
+    "/r/{regionKey}/p/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         }
       ],
       "get": {
@@ -468,17 +504,7 @@
                     "example": "it's impossible"
                   },
                   "attachments": {
-                    "type": "array",
-                    "items": {
-                      "properties": {
-                        "upload_token": {
-                          "type": "string"
-                        },
-                        "title": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "$ref": "#/components/schemas/upload_attachments"
                   },
                   "captcha": {
                     "type": "string",
@@ -517,7 +543,7 @@
             }
           },
           "400": {
-            "description": "Doesn't meet Post schema requirements",
+            "description": "Bad request | Post creation requirements not meet",
             "content": {
               "application/json": {
                 "schema": {
@@ -558,13 +584,13 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/": {
+    "/r/{regionKey}/p/{postKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         },
         {
-          "$ref": "#/components/parameters/postId"
+          "$ref": "#/components/parameters/postKey"
         }
       ],
       "get": {
@@ -660,13 +686,13 @@
         }
       }
     },
-    "/r/{regionId}/p/{postId}/comments/": {
+    "/r/{regionKey}/p/{postKey}/comments/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/regionId"
+          "$ref": "#/components/parameters/regionKey"
         },
         {
-          "$ref": "#/components/parameters/postId"
+          "$ref": "#/components/parameters/postKey"
         }
       ],
       "get": {
@@ -746,20 +772,14 @@
                 "properties": {
                   "content": {
                     "type": "string",
-                    "description": "content of content",
-                    "required": true
+                    "example": "impressive!"
                   },
                   "attachments": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/attachment"
-                    },
-                    "required": false
+                    "$ref": "#/components/schemas/upload_attachments"
                   },
                   "captcha": {
                     "type": "string",
-                    "description": "Google Recaptcha token",
-                    "required": true
+                    "description": "Google Recaptcha token"
                   }
                 }
               }
@@ -795,7 +815,14 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/bad_request"
+            "description": "Bad request | Comment creation requirement not meet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/invalid_attachment_failure"
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/no_authorization"
@@ -809,10 +836,10 @@
         }
       }
     },
-    "/u/{userId}/": {
+    "/u/{userKey}/": {
       "parameters": [
         {
-          "$ref": "#/components/parameters/userId"
+          "$ref": "#/components/parameters/userKey"
         }
       ],
       "get": {
@@ -844,7 +871,7 @@
         }
       }
     },
-    "/u/{userId}/feed/": {
+    "/u/{userKey}/feed/": {
       "get": {
         "summary": "get user feed",
         "tags": [
@@ -852,7 +879,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/userId"
+            "$ref": "#/components/parameters/userKey"
           },
           {
             "$ref": "#/components/parameters/query_mark"
@@ -1254,32 +1281,32 @@
   },
   "components": {
     "parameters": {
-      "regionId": {
+      "regionKey": {
         "in": "path",
         "name": "region",
         "required": true,
         "allowEmptyValue": false,
         "schema": {
           "type": "string",
-          "description": "the <b>region id</b> or the <b>url key</b> of the requested region"
+          "description": "the <b>url key</b> of the requested region"
         }
       },
-      "postId": {
+      "postKey": {
         "in": "path",
-        "name": "postId",
+        "name": "postKey",
         "required": true,
         "allowEmptyValue": false,
         "schema": {
           "type": "string",
-          "description": "the <b>post id</b> or the <b>url key</b> of the requested post"
+          "description": "the <b>url key</b> of the requested post"
         }
       },
-      "userId": {
+      "userKey": {
         "in": "path",
-        "name": "userId",
+        "name": "userKey",
         "schema": {
           "type": "string",
-          "description": "the <b>user id</b> or the <b>url key</b> of the requested user"
+          "description": "the or the <b>url key</b> of the requested user"
         }
       },
       "query_mark": {
@@ -1317,11 +1344,14 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "chat room"
+            "example": "chat room",
+            "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
           },
           "url_key": {
             "type": "string",
-            "example": "DP/chat-room"
+            "example": "DP/chat-room",
+            "pattern": "^[\\w\\-_\\/]+$",
+            "description": "url key of the region, format as \"%parent-region-url-key%/%this-region-specific-url-key\", unique across the whole site"
           },
           "parent": {
             "description": "parent region",
@@ -1329,20 +1359,19 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "DP"
+                "example": "DP",
+                "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
               },
               "url_key": {
+                "pattern": "^[\\w\\-_]+$",
                 "type": "string",
+                "description": "url key of the parent region",
                 "example": "DP"
               },
               "parent": {
                 "enum": [
                   null
                 ]
-              },
-              "regionId": {
-                "type": "string",
-                "example": "dkjkaljfd"
               },
               "description": {
                 "type": "string",
@@ -1353,10 +1382,6 @@
                 "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
               }
             }
-          },
-          "regionId": {
-            "type": "string",
-            "example": "dkjkaljfd"
           },
           "description": {
             "type": "string",
@@ -1374,19 +1399,18 @@
         "properties": {
           "title": {
             "type": "string",
-            "example": "why not to choice physics HL"
-          },
-          "postId": {
-            "type": "string",
-            "example": "AXPYAOfpEi"
+            "example": "why not to choice physics HL",
+            "description": "user display title of the post"
           },
           "url_key": {
             "type": "string",
-            "example": "why_not_to_choice_physics_HL"
+            "pattern": "^[\\w\\-_]+$",
+            "example": "why_not_to_choice_physics_HL",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across region"
           },
-          "regionId": {
+          "region_url_key": {
             "type": "string",
-            "example": "dkjkaljfd"
+            "example": "DP"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -1443,17 +1467,15 @@
       "user": {
         "type": "object",
         "properties": {
-          "user_id": {
-            "type": "string",
-            "example": "r8hpppZ6mK"
-          },
           "user_name": {
             "type": "string",
             "example": "james ye"
           },
           "url_key": {
             "type": "string",
-            "example": "james_ye"
+            "example": "james_ye",
+            "pattern": "^[\\w\\-_]+$",
+            "description": "url key of the post, can include \"a-Z, 0-9, -\", unique across the whole site"
           },
           "signature": {
             "type": "string",
@@ -1471,7 +1493,8 @@
         "type": "object",
         "properties": {
           "comment_id": {
-            "type": "string"
+            "type": "integer",
+            "description": "incremental integer unique in a post (#1, #2, #3...)"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -1509,6 +1532,25 @@
             "type": "string",
             "example": "usercontent.kcibald/abcdefg.jpeg",
             "description": "url link of the attachment"
+          }
+        }
+      },
+      "upload_attachments": {
+        "type": "array",
+        "description": "This array contains attachments either embedded in the content or as an standalone attachment",
+        "items": {
+          "properties": {
+            "title": {
+              "type": "string",
+              "example": "goodjob.jpg",
+              "description": "title for the standalone attachments, it can be null for embedded images",
+              "nullable": true
+            },
+            "upload_token": {
+              "type": "string",
+              "description": "The token received when client requested an upload, see: <a href=\"#tag/general/paths/~1upload/post\">/upload</a> endpoint",
+              "example": "ZblLmIvw0e"
+            }
           }
         }
       },
@@ -1634,7 +1676,6 @@
         }
       },
       "invalid_attachment_failure": {
-        "description": "attachment token invalid",
         "type": "object",
         "properties": {
           "success": {
@@ -1645,8 +1686,10 @@
           },
           "type": {
             "type": "string",
+            "description": "<ul><li><b>ATTACHMENT_INVALID_ID</b>: the request token attached is invalid or expired</li><li><b>ATTACHMENT_TYPE_MISMATCH</b>: attachment type of \"embedded\" is not found in the uploaded content, or an attachment marked as avatar is included, etc...</li><li><b>ATTACHMENT_FILE_NOT_UPLOADED</b>: the attachment token do not have file associate with it</li></ul>",
             "enum": [
               "ATTACHMENT_INVALID_ID",
+              "ATTACHMENT_TYPE_MISMATCH",
               "ATTACHMENT_FILE_NOT_UPLOADED"
             ]
           }
@@ -1665,6 +1708,112 @@
             "enum": [
               "PASSWORD_OR_USERNAME_INCORRECT"
             ]
+          }
+        }
+      },
+      "satisfiable_upload_response": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "upload_spec": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/tencent_based_storage_upload_spec"
+                  }
+                ]
+              },
+              "reference_token": {
+                "type": "string",
+                "description": "token use to reference uploaded object",
+                "example": "ZblLmIvw0e"
+              },
+              "reference_token_expire_time": {
+                "type": "integer",
+                "description": "expire time for the reference token, formatted in seconds from epoch, generally it is one day",
+                "example": "1563102266"
+              }
+            }
+          }
+        }
+      },
+      "tencent_based_storage_upload_spec": {
+        "type": "object",
+        "description": "For Tencent based storage (using COS)",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "COS"
+            ]
+          },
+          "credentials": {
+            "type": "object",
+            "description": "credentials for accessing the service",
+            "properties": {
+              "security_token": {
+                "type": "string",
+                "example": "5e776c4216ff4d31a7c74fe194a978a3ff2a42864"
+              },
+              "secret_id": {
+                "type": "string",
+                "example": "AKIDcAZnqgar9ByWq6m7ucIn8LNEuY2MkPCl"
+              },
+              "secret_key": {
+                "type": "string",
+                "example": "VpxrX0IMCpHXWL0Wr3KQNCqJix1uhMqD"
+              }
+            }
+          },
+          "upload_config": {
+            "properties": {
+              "bucket": {
+                "type": "string",
+                "example": "kcibald-test"
+              },
+              "region": {
+                "type": "string",
+                "example": "ap-hongkong"
+              },
+              "object_name": {
+                "type": "string",
+                "example": "avatars/ZblLmIvw0e.jpeg"
+              },
+              "storage_class": {
+                "enum": [
+                  "STANDARD",
+                  "STANDARD_IA"
+                ]
+              },
+              "meta_data_headers": {
+                "type": "object",
+                "default": {},
+                "example": {
+                  "x-cos-meta-object-relation": "eyJ1cGxvYWRfdXNlciI6ImthZHVmMyJ9"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unsatisfiable_upload_response": {
+        "properties": {
+          "success": {
+            "enum": [
+              false
+            ]
+          },
+          "message": {
+            "required": false,
+            "description": "helpful message that maybe useful for the consumers",
+            "example": "we run out of money, sorry no upload :("
           }
         }
       }
