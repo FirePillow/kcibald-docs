@@ -78,7 +78,8 @@
                 "properties": {
                   "account": {
                     "type": "string",
-                    "description": "user's user name"
+                    "description": "user's user name",
+                    "example": "james_ye"
                   },
                   "password": {
                     "type": "string",
@@ -329,7 +330,54 @@
                               "type": "array",
                               "nullable": true,
                               "items": {
-                                "$ref": "#/components/schemas/region"
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "example": "chat room"
+                                  },
+                                  "url_key": {
+                                    "type": "string",
+                                    "example": "DP/chat-room",
+                                    "pattern": "^[\\w\\-_\\/]+$"
+                                  },
+                                  "parent": {
+                                    "type": "object",
+                                    "properties": {
+                                      "name": {
+                                        "type": "string",
+                                        "example": "DP"
+                                      },
+                                      "url_key": {
+                                        "pattern": "^[\\w\\-_]+$",
+                                        "type": "string",
+                                        "description": "url key of the parent region",
+                                        "example": "DP"
+                                      },
+                                      "parent": {
+                                        "enum": [
+                                          null
+                                        ]
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "example": "DP region"
+                                      },
+                                      "avatar": {
+                                        "type": "string",
+                                        "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+                                      }
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "example": "region for talking about things about DP"
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+                                  }
+                                }
                               }
                             }
                           }
@@ -447,7 +495,10 @@
                 "schema": {
                   "properties": {
                     "success": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
                     },
                     "data": {
                       "type": "object",
@@ -932,6 +983,18 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "404": {
+            "$ref": "#/components/responses/not_found"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1030,6 +1093,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/bad_request"
+          },
+          "401": {
+            "$ref": "#/components/responses/common_auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
           }
         }
       }
@@ -1122,13 +1194,15 @@
                         },
                         "signature": {
                           "type": "string",
-                          "description": "signature of the user"
+                          "description": "signature of the user",
+                          "example": "best signature ever"
                         }
                       }
                     },
                     "avatar": {
                       "type": "string",
-                      "description": "url to avatar file"
+                      "description": "url to avatar file",
+                      "example": "user-avatars.kcibald.com/ajdkljf.jpeg"
                     }
                   }
                 }
@@ -1162,11 +1236,12 @@
                 "properties": {
                   "original_password": {
                     "type": "string",
-                    "description": "user's original password",
-                    "required": true
+                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
+                    "description": "user's original password"
                   },
                   "new_password": {
                     "type": "string",
+                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
                     "description": "password that user is going to change to"
                   },
                   "captcha": {
@@ -1233,7 +1308,8 @@
                   },
                   "address": {
                     "type": "string",
-                    "format": "email"
+                    "format": "email",
+                    "example": "new_email@example.com"
                   }
                 }
               }
@@ -1280,7 +1356,8 @@
             "schema": {
               "type": "string",
               "description": "recaptcha validation token (for avoiding spam mail abuse)"
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
@@ -1339,6 +1416,10 @@
           {
             "in": "query",
             "name": "token",
+            "schema": {
+              "type": "string",
+              "example": "afdhk"
+            },
             "description": "Upload token"
           }
         ],
@@ -1574,7 +1655,8 @@
         "properties": {
           "comment_id": {
             "type": "integer",
-            "description": "incremental integer unique in a post (#1, #2, #3...)"
+            "description": "incremental integer unique in a post (1, 2, 3...)",
+            "example": "1"
           },
           "author": {
             "$ref": "#/components/schemas/user"
@@ -1678,10 +1760,10 @@
         "type": "string",
         "description": "meant to be an identifier to mark the position of post listed, a tool for paging",
         "format": "hexadecimal",
-        "minLength": "24",
-        "maxLength": "24",
+        "minLength": "16",
+        "maxLength": "16",
         "required": false,
-        "example": "5c7fc05f802b95782f1f9e88",
+        "example": "XQnlUfIU1EA3-50e",
         "nullable": true
       },
       "recaptcha_failure": {
@@ -1746,10 +1828,10 @@
                 "example": "you violated our terms",
                 "nullable": true
               },
-              "time_to_unban": {
+              "time_of_unban": {
                 "type": "integer",
                 "format": "int64",
-                "description": "timestamp of unban, -1 if is permanent ban"
+                "description": "timestamp of time for unban, -1 if is permanent ban"
               }
             }
           }
