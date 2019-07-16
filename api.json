@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Kcibald API",
-    "version": "0.0.1",
+    "version": "1.0.0-alpha",
     "title": "Kcibald API",
     "contact": {
       "name": "wusatosi"
