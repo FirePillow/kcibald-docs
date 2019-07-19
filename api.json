@@ -166,9 +166,95 @@
         "tags": [
           "general"
         ],
-        "parameters": [
-        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_name": {
+                    "type": "string",
+                    "example": "new person"
+                  },
+                  "school_email": {
+                    "type": "string",
+                    "description": "school email",
+                    "example": "example@school.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maximum": 20,
+                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
+                    "example": "GRpMhyy1Ub"
+                  },
+                  "recaptcha": {
+                    "type": "string",
+                    "description": "google recaptcha validation token"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
+          "204": {
+            "description": "Registry success"
+          },
+          "400": {
+            "description": "Bad Request | requirements not meet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "SIMPLE_PASSWORD",
+                        "INVALID_EMAIL",
+                        "CAPTCHA_VERIFICATION_FAILED"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict | registered email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "EMAIL_ALREADY_INUSE"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/server_failure"
+          }
         }
       }
     },
