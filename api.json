@@ -183,7 +183,10 @@
                   },
                   "password": {
                     "type": "string",
-                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$"
+                    "minLength": 8,
+                    "maximum": 20,
+                    "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
+                    "example": "GRpMhyy1Ub"
                   },
                   "recaptcha": {
                     "type": "string",
