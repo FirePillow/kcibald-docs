@@ -227,6 +227,30 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict | registered email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "EMAIL_ALREADY_EXISTS"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "$ref": "#/components/responses/server_failure"
           }
