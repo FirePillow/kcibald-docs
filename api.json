@@ -2054,6 +2054,7 @@
       "unsatisfiable_upload_response": {
         "properties": {
           "success": {
+            "type": "boolean",
             "enum": [
               false
             ]
