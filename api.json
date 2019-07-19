@@ -243,7 +243,7 @@
                     "type": {
                       "type": "string",
                       "enum": [
-                        "EMAIL_ALREADY_EXISTS"
+                        "EMAIL_ALREADY_INUSE"
                       ]
                     }
                   }
