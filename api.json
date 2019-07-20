@@ -86,7 +86,8 @@
                     "format": "password",
                     "example": "x2YE7LJMOR",
                     "pattern": "^(?=.*?[a-z])(?=.*?[0-9]).{8,20}$",
-                    "minLength": 6,
+                    "minLength": 8,
+                    "maxLength": 20,
                     "description": "plain text password"
                   },
                   "captcha": {
