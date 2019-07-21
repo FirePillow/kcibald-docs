@@ -1809,7 +1809,7 @@
         "anyOf": [
           {
             "properties": {
-              "type": {
+              "verb": {
                 "type": "string",
                 "description": "type of event, in this case, a new post in subscribed region",
                 "enum": [
