@@ -329,6 +329,7 @@
           {
             "in": "query",
             "name": "upload_type",
+            "required": true,
             "schema": {
               "enum": [
                 "ATTACHMENT",
@@ -1429,6 +1430,7 @@
           {
             "in": "path",
             "name": "emailType",
+            "required": true,
             "schema": {
               "type": "string",
               "enum": [
@@ -1503,6 +1505,7 @@
           {
             "in": "query",
             "name": "token",
+            "required": true,
             "schema": {
               "type": "string",
               "example": "afdhk"
@@ -1552,6 +1555,7 @@
       "userKey": {
         "in": "path",
         "name": "userKey",
+        "required": true,
         "schema": {
           "type": "string",
           "description": "the or the <b>url key</b> of the requested user"
@@ -1560,6 +1564,7 @@
       "query_mark": {
         "in": "query",
         "name": "after",
+        "required": false,
         "description": "fetch activities after a post identified using an special id for paging, this will be provided upon query",
         "schema": {
           "$ref": "#/components/schemas/query_mark"
@@ -1568,6 +1573,7 @@
       "amount": {
         "in": "query",
         "name": "amount",
+        "required": false,
         "description": "maximum number of activities to return",
         "schema": {
           "type": "integer",
@@ -1579,6 +1585,7 @@
       "skip": {
         "name": "skip",
         "in": "query",
+        "required": false,
         "description": "skip number of objects",
         "schema": {
           "type": "integer",
@@ -1850,8 +1857,7 @@
         "minLength": "16",
         "maxLength": "16",
         "required": false,
-        "example": "XQnlUfIU1EA3-50e",
-        "nullable": true
+        "example": "XQnlUfIU1EA3-50e"
       },
       "recaptcha_failure": {
         "description": "Recaptcha verification failed",
