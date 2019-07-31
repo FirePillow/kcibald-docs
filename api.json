@@ -1635,6 +1635,19 @@
               "avatar": {
                 "type": "string",
                 "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+              },
+              "color_class": {
+                "type": "object",
+                "properties": {
+                  "left": {
+                    "type": "string",
+                    "example": "bgred"
+                  },
+                  "right": {
+                    "type": "string",
+                    "example": "bggreen"
+                  }
+                }
               }
             }
           },
@@ -1645,6 +1658,19 @@
           "avatar": {
             "type": "string",
             "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+          },
+          "color_class": {
+            "type": "object",
+            "properties": {
+              "left": {
+                "type": "string",
+                "example": "bgred"
+              },
+              "right": {
+                "type": "string",
+                "example": "bggreen"
+              }
+            }
           }
         }
       },
