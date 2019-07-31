@@ -783,32 +783,8 @@
         "summary": "delete post",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": "deletion success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        true
-                      ]
-                    },
-                    "data": {
-                      "allOf": [
-                        {
-                          "$ref": "#/components/schemas/post_head"
-                        },
-                        {
-                          "description": "post deleted"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "deletion success"
           },
           "400": {
             "$ref": "#/components/responses/bad_request"
