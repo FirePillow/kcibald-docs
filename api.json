@@ -898,6 +898,11 @@
                   "captcha": {
                     "type": "string",
                     "description": "Google Recaptcha token"
+                  },
+                  "reply_to": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "the comment id this comment is reply to, if the comment do not exist, 404 will be responsed"
                   }
                 }
               }
