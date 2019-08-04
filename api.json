@@ -1685,9 +1685,6 @@
           "create_time_stamp": {
             "$ref": "#/components/schemas/create_timestamp"
           },
-          "update_time_stamp": {
-            "$ref": "#/components/schemas/update_timestamp"
-          },
           "content": {
             "type": "string",
             "example": "lalala"
