@@ -398,110 +398,105 @@
                       ]
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "region": {
-                          "allOf": [
-                            {
-                              "$ref": "#/components/schemas/region"
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/region"
+                        },
+                        {
+                          "properties": {
+                            "top_posts": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/post_head"
+                              },
+                              "maxItems": "20"
                             },
-                            {
-                              "properties": {
-                                "top_posts": {
-                                  "type": "array",
-                                  "items": {
-                                    "$ref": "#/components/schemas/post_head"
+                            "post_query_mark": {
+                              "$ref": "#/components/schemas/query_mark"
+                            },
+                            "child_region": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "example": "chat room"
                                   },
-                                  "maxItems": "20"
-                                },
-                                "child_region": {
-                                  "type": "array",
-                                  "nullable": true,
-                                  "items": {
+                                  "url_key": {
+                                    "type": "string",
+                                    "example": "DP/chat-room",
+                                    "pattern": "^[\\w\\-_\\/]+$"
+                                  },
+                                  "parent": {
                                     "type": "object",
                                     "properties": {
                                       "name": {
                                         "type": "string",
-                                        "example": "chat room"
+                                        "example": "DP"
                                       },
                                       "url_key": {
+                                        "pattern": "^[\\w\\-_]+$",
                                         "type": "string",
-                                        "example": "DP/chat-room",
-                                        "pattern": "^[\\w\\-_\\/]+$"
+                                        "description": "url key of the parent region",
+                                        "example": "DP"
                                       },
                                       "parent": {
-                                        "type": "object",
-                                        "properties": {
-                                          "name": {
-                                            "type": "string",
-                                            "example": "DP"
-                                          },
-                                          "url_key": {
-                                            "pattern": "^[\\w\\-_]+$",
-                                            "type": "string",
-                                            "description": "url key of the parent region",
-                                            "example": "DP"
-                                          },
-                                          "parent": {
-                                            "enum": [
-                                              null
-                                            ]
-                                          },
-                                          "description": {
-                                            "type": "string",
-                                            "example": "DP region"
-                                          },
-                                          "avatar": {
-                                            "type": "string",
-                                            "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                                          }
-                                        }
+                                        "enum": [
+                                          null
+                                        ]
                                       },
                                       "description": {
                                         "type": "string",
-                                        "example": "region for talking about things about DP"
+                                        "example": "DP region"
                                       },
                                       "avatar": {
                                         "type": "string",
                                         "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                                       }
                                     }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "example": "region for talking about things about DP"
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
                                   }
                                 }
                               }
                             }
-                          ]
+                          }
                         },
-                        "query_mark": {
-                          "$ref": "#/components/schemas/query_mark"
-                        }
-                      },
-                      "example": {
-                        "region": {
-                          "name": "DP",
-                          "url_key": "DP",
-                          "parent": null,
-                          "description": "region for talking things about DP",
-                          "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
-                          "top_posts": [],
-                          "child_region": [
-                            {
-                              "name": "chat room",
-                              "url_key": "DP/chat-room",
-                              "parent": {
-                                "name": "DP",
-                                "url_key": "DP",
-                                "parent": null,
-                                "description": "region for talking things about DP",
+                        {
+                          "example": {
+                            "name": "DP",
+                            "url_key": "DP",
+                            "parent": null,
+                            "description": "region for talking things about DP",
+                            "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
+                            "top_posts": [],
+                            "post_query_mark": "5c7fc05f802b95782f1f9e88",
+                            "child_region": [
+                              {
+                                "name": "chat room",
+                                "url_key": "DP/chat-room",
+                                "parent": {
+                                  "name": "DP",
+                                  "url_key": "DP",
+                                  "parent": null,
+                                  "description": "region for talking things about DP",
+                                  "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
+                                },
+                                "description": "region for talking about things about DP",
                                 "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                              },
-                              "description": "region for talking about things about DP",
-                              "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                            }
-                          ]
-                        },
-                        "query_mark": "5c7fc05f802b95782f1f9e88"
-                      }
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     }
                   }
                 }
