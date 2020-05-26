@@ -6,8 +6,5 @@ and is exported by [redoc](https://github.com/Redocly/redoc)
 to [Kcibald docs site](https://docs.kcibald.com).
 
 ## badges
-[![CircleCI](https://circleci.com/gh/FirePillow/kcibald-docs.svg?style=svg)](https://circleci.com/gh/FirePillow/kcibald-docs)
-As an continous intigration service, Circle-CI enables us to update the kcibald docs website upon commit to contiouns delivr our docs.
-
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=FirePillow/kcibald-docs)](https://dependabot.com)
 Dependabot keeps our node dependencies up to date
