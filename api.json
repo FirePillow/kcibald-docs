@@ -413,60 +413,6 @@
                             },
                             "post_query_mark": {
                               "$ref": "#/components/schemas/query_mark"
-                            },
-                            "child_region": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "name": {
-                                    "type": "string",
-                                    "example": "chat room"
-                                  },
-                                  "url_key": {
-                                    "type": "string",
-                                    "example": "DP/chat-room",
-                                    "pattern": "^[\\w\\-_\\/]+$"
-                                  },
-                                  "parent": {
-                                    "type": "object",
-                                    "properties": {
-                                      "name": {
-                                        "type": "string",
-                                        "example": "DP"
-                                      },
-                                      "url_key": {
-                                        "pattern": "^[\\w\\-_]+$",
-                                        "type": "string",
-                                        "description": "url key of the parent region",
-                                        "example": "DP"
-                                      },
-                                      "parent": {
-                                        "enum": [
-                                          null
-                                        ]
-                                      },
-                                      "description": {
-                                        "type": "string",
-                                        "example": "DP region"
-                                      },
-                                      "avatar": {
-                                        "type": "string",
-                                        "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                                      }
-                                    }
-                                  },
-                                  "description": {
-                                    "type": "string",
-                                    "example": "region for talking about things about DP"
-                                  },
-                                  "avatar": {
-                                    "type": "string",
-                                    "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                                  }
-                                }
-                              }
                             }
                           }
                         },
@@ -474,26 +420,10 @@
                           "example": {
                             "name": "DP",
                             "url_key": "DP",
-                            "parent": null,
                             "description": "region for talking things about DP",
                             "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg",
                             "top_posts": [],
-                            "post_query_mark": "5c7fc05f802b95782f1f9e88",
-                            "child_region": [
-                              {
-                                "name": "chat room",
-                                "url_key": "DP/chat-room",
-                                "parent": {
-                                  "name": "DP",
-                                  "url_key": "DP",
-                                  "parent": null,
-                                  "description": "region for talking things about DP",
-                                  "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                                },
-                                "description": "region for talking about things about DP",
-                                "avatar": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-                              }
-                            ]
+                            "post_query_mark": "5c7fc05f802b95782f1f9e88"
                           }
                         }
                       ]
@@ -1587,50 +1517,7 @@
             "type": "string",
             "example": "DP/chat-room",
             "pattern": "^[\\w\\-_\\/]+$",
-            "description": "url key of the region, format as \"%parent-region-url-key%/%this-region-specific-url-key\", unique across the whole site"
-          },
-          "parent": {
-            "description": "parent region",
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "DP",
-                "description": "user display name of the region, can include \"a-Z, 0-9, _, -\", unique across the whole site"
-              },
-              "url_key": {
-                "pattern": "^[\\w\\-_]+$",
-                "type": "string",
-                "description": "url key of the parent region",
-                "example": "DP"
-              },
-              "parent": {
-                "enum": [
-                  null
-                ]
-              },
-              "description": {
-                "type": "string",
-                "example": "DP region"
-              },
-              "avatar": {
-                "type": "string",
-                "example": "usercontent.kcibald.com/jalkdjkajfdlk.jpeg"
-              },
-              "color_class": {
-                "type": "object",
-                "properties": {
-                  "left": {
-                    "type": "string",
-                    "example": "bgred"
-                  },
-                  "right": {
-                    "type": "string",
-                    "example": "bggreen"
-                  }
-                }
-              }
-            }
+            "description": "url key of the region, unique across the whole site"
           },
           "description": {
             "type": "string",
