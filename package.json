@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ali-oss": "^6.1.0",
-    "git-rev-sync": "^2.0.0",
+    "git-rev-sync": "^3.0.1",
     "redoc": "^2.0.0-rc.30"
   },
   "devDependencies": {
